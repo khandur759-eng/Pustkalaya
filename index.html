@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocuBook - Document to 3D FlipBook Converter</title>
+    <meta name="description" content="Convert PDFs, Word files, and documents into realistic 3D digital flipbooks with page-sliding and turn animations." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Polyfill Iterator and Promise.withResolvers for modern libraries like pdfjs-dist
+      if (typeof window !== 'undefined') {
+        if (typeof window.Iterator === 'undefined') {
+          function Iterator() {}
+          Iterator.prototype = {};
+          window.Iterator = Iterator;
+          if (typeof globalThis !== 'undefined' && typeof globalThis.Iterator === 'undefined') {
+            globalThis.Iterator = Iterator;
+          }
+        }
+        if (typeof Promise.withResolvers === 'undefined') {
+          Promise.withResolvers = function() {
+            var resolve, reject;
+            var promise = new Promise(function(res, rej) {
+              resolve = res;
+              reject = rej;
+            });
+            return { promise: promise, resolve: resolve, reject: reject };
+          };
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-[#F4F1EA] text-[#2C2C2C] min-h-screen overflow-x-hidden antialiased selection:bg-[#5A5A40]/25 selection:text-[#5A5A40]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

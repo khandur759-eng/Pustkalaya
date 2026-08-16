@@ -1,0 +1,6 @@
+{
+  "name": "DocuBook - Document to 3D FlipBook Converter",
+  "description": "A physical book reading experience that turns the screen into a realistic book with tactile page-peeling physics, paper textures, 3D hardcover animations, ambient soundscapes, and library management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
