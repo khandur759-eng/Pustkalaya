@@ -149,68 +149,68 @@ export class PageTextureManager {
   ) {
     // 1. Paper Background & Subtle Grain
     let bgFill = '#FDFBF7';
-    let textColor = '#2B261F';
-    let subTextColor = '#7D7565';
-    let accentColor = '#5A5A40';
-    let borderColor = 'rgba(180, 168, 145, 0.4)';
+    let textColor = '#111827'; // High-contrast rich deep dark ink
+    let subTextColor = '#6B7280';
+    let accentColor = '#4F46E5'; // Elegant royal indigo accent for drop caps & flourishes
+    let borderColor = 'rgba(209, 213, 219, 0.6)';
 
     switch (settings.paperTexture) {
       case 'parchment':
         bgFill = '#F5EEDB';
-        textColor = '#282015';
-        subTextColor = '#786850';
-        accentColor = '#6A5638';
+        textColor = '#18130B';
+        subTextColor = '#6B5A40';
+        accentColor = '#5C4328';
         borderColor = 'rgba(160, 140, 105, 0.45)';
         break;
       case 'washi':
         bgFill = '#FAF7EE';
-        textColor = '#24201C';
-        subTextColor = '#7C7468';
-        accentColor = '#7A6B52';
+        textColor = '#141210';
+        subTextColor = '#696052';
+        accentColor = '#4B5563';
         borderColor = 'rgba(185, 172, 148, 0.5)';
         break;
       case 'linen':
         bgFill = '#F4EFE6';
-        textColor = '#221F1B';
-        subTextColor = '#6E6659';
-        accentColor = '#5C4D3C';
+        textColor = '#110F0D';
+        subTextColor = '#61584A';
+        accentColor = '#4B5563';
         borderColor = 'rgba(175, 160, 138, 0.55)';
         break;
       case 'sepia':
         bgFill = '#EFE6D5';
-        textColor = '#3A2E20';
-        subTextColor = '#827056';
-        accentColor = '#7A5230';
+        textColor = '#221508';
+        subTextColor = '#6E583F';
+        accentColor = '#7A431D';
         borderColor = 'rgba(170, 145, 120, 0.4)';
         break;
       case 'dark':
-        bgFill = '#1C1C1E';
-        textColor = '#E4E2DC';
-        subTextColor = '#8E8C85';
-        accentColor = '#D4B37F';
-        borderColor = 'rgba(90, 90, 95, 0.4)';
+        bgFill = '#18181B';
+        textColor = '#F4F4F5';
+        subTextColor = '#A1A1AA';
+        accentColor = '#818CF8';
+        borderColor = 'rgba(63, 63, 70, 0.5)';
         break;
       case 'slate':
-        bgFill = '#23272E';
-        textColor = '#ECEFF4';
-        subTextColor = '#9BA3B0';
-        accentColor = '#88C0D0';
-        borderColor = 'rgba(76, 86, 106, 0.45)';
+        bgFill = '#0F172A';
+        textColor = '#F8FAFC';
+        subTextColor = '#94A3B8';
+        accentColor = '#60A5FA';
+        borderColor = 'rgba(51, 65, 85, 0.5)';
         break;
       case 'emerald':
-        bgFill = '#0F231C';
-        textColor = '#E0ECE7';
-        subTextColor = '#8DA89C';
-        accentColor = '#52B788';
-        borderColor = 'rgba(42, 82, 64, 0.45)';
+        bgFill = '#06281E';
+        textColor = '#F0FDF4';
+        subTextColor = '#86EFAC';
+        accentColor = '#34D399';
+        borderColor = 'rgba(22, 101, 52, 0.5)';
         break;
       case 'cream':
       default:
         bgFill = '#FDFCF8';
-        textColor = '#2C2A24';
-        subTextColor = '#847E70';
-        accentColor = '#5A5A40';
-        borderColor = 'rgba(200, 190, 170, 0.45)';
+        textColor = '#111827';
+        subTextColor = '#6B7280';
+        accentColor = '#4F46E5';
+        borderColor = 'rgba(229, 231, 235, 0.8)';
         break;
     }
 
@@ -387,52 +387,66 @@ export class PageTextureManager {
     }
 
     // 5. Standard Content Page
-    // Running Head (Top Header)
-    ctx.fillStyle = subTextColor;
-    ctx.font = 'bold 11px sans-serif';
-    ctx.textAlign = isLeft ? 'left' : 'right';
-    const headerTitle = isLeft
-      ? book.title.toUpperCase()
-      : page.chapterTitle ? page.chapterTitle.toUpperCase() : book.title.toUpperCase();
-    ctx.fillText(headerTitle.slice(0, 32), isLeft ? padX : w - padX, padY * 0.65);
+    // Running Head (Top Header on Non-Chapter Pages or spread right page)
+    if (!page.chapterTitle) {
+      ctx.fillStyle = subTextColor;
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = isLeft ? 'left' : 'right';
+      const headerTitle = isLeft
+        ? book.title
+        : book.title;
+      ctx.fillText(headerTitle.slice(0, 36), isLeft ? padX : w - padX, padY * 0.65);
+    }
 
-    ctx.textAlign = isLeft ? 'right' : 'left';
-    ctx.fillText(String(pageNum), isLeft ? w - padX : padX, padY * 0.65);
+    let curY = padY + 10;
 
-    // Top Divider line
-    ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(padX, padY * 0.78);
-    ctx.lineTo(w - padX, padY * 0.78);
-    ctx.stroke();
-
-    let curY = padY + 15;
-
-    // Chapter Title Header
+    // Centered Chapter Title Header (matching Image 3 & 4)
     if (page.chapterTitle) {
+      // 1. Chapter number
+      ctx.fillStyle = textColor;
+      ctx.font = `bold ${Math.round(settings.fontSize * 1.35)}px ${serifFont}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(String(page.chapterIndex || 1), w / 2, curY + 15);
+      curY += 28;
+
+      // 2. Diamond ornament line
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(w / 2 - 28, curY);
+      ctx.lineTo(w / 2 - 6, curY);
+      ctx.moveTo(w / 2 + 6, curY);
+      ctx.lineTo(w / 2 + 28, curY);
+      ctx.stroke();
+
       ctx.fillStyle = accentColor;
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'left';
-      ctx.fillText(`CHAPTER ${page.chapterIndex || 1}`, padX, curY);
+      ctx.font = '10px serif';
+      ctx.fillText('◇', w / 2, curY + 3);
+      curY += 28;
+
+      // 3. Chapter Title
+      ctx.fillStyle = textColor;
+      ctx.font = `bold ${Math.round(settings.fontSize * 1.6)}px ${serifFont}`;
+      ctx.fillText(page.chapterTitle, w / 2, curY);
       curY += 26;
 
-      ctx.fillStyle = textColor;
-      ctx.font = `bold ${Math.round(settings.fontSize * 1.5)}px ${serifFont}`;
-      ctx.fillText(page.chapterTitle, padX, curY);
-      curY += Math.round(settings.fontSize * 1.8);
+      // 4. Subtle ornamental flourish below title
+      ctx.fillStyle = accentColor;
+      ctx.font = '14px serif';
+      ctx.fillText('❖', w / 2, curY);
+      curY += 36;
     }
 
     // Blockquote
     if (page.quote) {
-      ctx.fillStyle = 'rgba(0,0,0,0.03)';
-      ctx.fillRect(padX, curY, contentW, 60);
+      ctx.fillStyle = 'rgba(0,0,0,0.025)';
+      ctx.fillRect(padX, curY, contentW, 58);
 
       ctx.strokeStyle = accentColor;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
       ctx.moveTo(padX, curY);
-      ctx.lineTo(padX, curY + 60);
+      ctx.lineTo(padX, curY + 58);
       ctx.stroke();
 
       ctx.fillStyle = textColor;
@@ -440,7 +454,7 @@ export class PageTextureManager {
       ctx.textAlign = 'left';
       ctx.fillText(`"${page.quote.slice(0, 90)}..."`, padX + 16, curY + 32);
 
-      curY += 75;
+      curY += 72;
     }
 
     // Paragraphs & Drop Caps
@@ -450,7 +464,7 @@ export class PageTextureManager {
     ctx.fillStyle = textColor;
     ctx.textAlign = 'left';
 
-    const maxContentY = h - padY - (page.footnote ? 40 : 10);
+    const maxContentY = h - padY - (page.footnote ? 48 : 28);
 
     for (let pIdx = 0; pIdx < page.paragraphs.length; pIdx++) {
       if (curY >= maxContentY) break;
@@ -463,42 +477,35 @@ export class PageTextureManager {
         const firstLetter = text[0];
         const restOfText = text.slice(1);
 
-        const dropCapSize = Math.round(lineHeight * 2.4);
-        const dropCapBoxW = Math.round(dropCapSize * 0.95);
+        const dropCapSize = Math.round(lineHeight * 2.5);
+        const dropCapBoxW = Math.round(dropCapSize * 0.85);
         const dropCapBoxH = Math.round(lineHeight * 2.2);
 
-        // Draw decorative drop cap background & border
-        ctx.fillStyle = 'rgba(0,0,0,0.03)';
-        ctx.fillRect(padX, curY, dropCapBoxW, dropCapBoxH);
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(padX + 2, curY + 2, dropCapBoxW - 4, dropCapBoxH - 4);
-
-        // Draw letter
+        // Draw elegant royal drop cap letter
         ctx.fillStyle = accentColor;
-        ctx.font = `bold ${Math.round(dropCapSize * 0.9)}px ${serifFont}`;
-        ctx.textAlign = 'center';
-        ctx.fillText(firstLetter, padX + dropCapBoxW / 2, curY + dropCapBoxH * 0.78);
+        ctx.font = `bold ${Math.round(dropCapSize * 0.95)}px ${serifFont}`;
+        ctx.textAlign = 'left';
+        ctx.fillText(firstLetter, padX, curY + dropCapBoxH * 0.82);
 
         // Wrap first 2 lines next to drop cap
         ctx.fillStyle = textColor;
         ctx.font = `${fontSize}px ${serifFont}`;
         ctx.textAlign = 'left';
 
-        const sideW = contentW - dropCapBoxW - 12;
+        const sideW = contentW - dropCapBoxW - 8;
         const sideLines = this.wrapText(ctx, restOfText, sideW);
 
         // Draw up to 2 lines beside drop cap
         const besideCount = Math.min(2, sideLines.length);
         for (let l = 0; l < besideCount; l++) {
           if (settings.textAlign === 'justify' && l < besideCount - 1) {
-            this.drawJustifiedLine(ctx, sideLines[l], padX + dropCapBoxW + 12, curY + (l + 1) * lineHeight * 0.85, sideW);
+            this.drawJustifiedLine(ctx, sideLines[l], padX + dropCapBoxW + 8, curY + (l + 1) * lineHeight * 0.85, sideW);
           } else {
-            ctx.fillText(sideLines[l], padX + dropCapBoxW + 12, curY + (l + 1) * lineHeight * 0.85);
+            ctx.fillText(sideLines[l], padX + dropCapBoxW + 8, curY + (l + 1) * lineHeight * 0.85);
           }
         }
 
-        curY += dropCapBoxH + 6;
+        curY += dropCapBoxH + 4;
 
         // Wrap remaining text across full width
         if (sideLines.length > besideCount) {
@@ -526,7 +533,15 @@ export class PageTextureManager {
           curY += lineHeight;
         }
       }
-      curY += Math.round(lineHeight * 0.4);
+      curY += Math.round(lineHeight * 0.5);
+    }
+
+    // Centered star flourish at bottom of chapter page
+    if (page.chapterTitle && curY < h - padY - 35) {
+      ctx.fillStyle = accentColor;
+      ctx.font = '14px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✶', w / 2, h - padY - 30);
     }
 
     // Footnote
@@ -544,12 +559,12 @@ export class PageTextureManager {
       ctx.fillText(page.footnote.slice(0, 80), padX, h - padY - 8);
     }
 
-    // Bottom page number
+    // Bottom page number in format "X of Y"
     if (settings.showPageNumbers) {
       ctx.fillStyle = subTextColor;
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(String(pageNum), w / 2, h - padY * 0.35);
+      ctx.fillText(`${pageNum} of ${book.totalPages}`, w / 2, h - padY * 0.35);
     }
   }
 

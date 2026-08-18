@@ -290,13 +290,12 @@ export class GestureStateMachine {
       shouldComplete = this.progress >= 0.28;
     }
 
-    // Pass instantaneous release speed into settling duration calculation for organic inertia
-    const releaseSpeed = Math.abs(this.velocityX);
+    // Natural organic page settling duration: relaxed, graceful paper float (500ms - 800ms)
     const targetProgress = shouldComplete ? 1.0 : 0.0;
-    const remainingDist = Math.abs(targetProgress - this.progress);
+    const remainingDist = Math.max(0.08, Math.abs(targetProgress - this.progress));
     
-    // Duration scales with remaining distance and speed (fast flick = 200ms, slow drag = 380ms)
-    const dynamicDuration = Math.max(180, Math.min(440, (remainingDist * 360) / Math.max(0.7, releaseSpeed * 1.5)));
+    // Graceful floating duration proportional to distance remaining
+    const dynamicDuration = Math.max(480, Math.min(820, remainingDist * 680));
 
     this.triggerSettling(shouldComplete ? 'forward' : 'backward', dynamicDuration);
   }
@@ -306,8 +305,8 @@ export class GestureStateMachine {
     this.settleStartProgress = this.progress;
     this.settleTargetProgress = direction === 'forward' ? 1.0 : 0.0;
 
-    const remainingDist = Math.abs(this.settleTargetProgress - this.settleStartProgress);
-    this.settleDuration = customDurationMs || Math.max(180, Math.min(420, remainingDist * 360));
+    const remainingDist = Math.max(0.08, Math.abs(this.settleTargetProgress - this.settleStartProgress));
+    this.settleDuration = customDurationMs || Math.max(480, Math.min(780, remainingDist * 650));
 
     this.setState(direction === 'forward' ? 'SETTLING_FORWARD' : 'SETTLING_BACKWARD');
   }
@@ -315,7 +314,7 @@ export class GestureStateMachine {
   /**
    * Programmatically trigger a smooth page turn (e.g. from keyboard arrow or button).
    */
-  public triggerAutoTurn(direction: TurnDirection, durationMs: number = 480) {
+  public triggerAutoTurn(direction: TurnDirection, durationMs: number = 620) {
     if (this.state !== 'IDLE') return;
 
     const allowed = this.callbacks.onTurnStart(direction);

@@ -1,16 +1,15 @@
 import { Book, Chapter, PageData } from '../types';
 import { createBookFromText } from './documentParser';
 
-// Dedicated 24-page original demonstration volume
-function createPrimaryDemoBook(): Book {
+export function createTheAlchemistBook(): Book {
   const pages: PageData[] = [
     // Page 1: Front Cover
     {
       id: 1,
       pageNumber: 1,
       isCover: true,
-      content: "The Alchemist of Alexandria",
-      paragraphs: ["The Alchemist of Alexandria", "Lysander Thorne"],
+      content: "The Alchemist",
+      paragraphs: ["The Alchemist", "Paulo Coelho"],
       wordCount: 12,
     },
     // Page 2: Title & Epigraph Page
@@ -18,14 +17,14 @@ function createPrimaryDemoBook(): Book {
       id: 2,
       pageNumber: 2,
       chapterTitle: "Title & Epigraph",
-      content: "The Alchemist of Alexandria",
+      content: "The Alchemist",
       paragraphs: [
-        "Being a faithful chronicle of the hidden laboratories beneath the Pharos, the discovery of the Celestial Crucible, and the voyages across the Sea of Amber.",
-        "Published in Alexandria & Florence, Anno Domini MDCLXXIV.",
+        "A magical fable about following your dream.",
+        "Translated by Alan R. Clarke. HarperTorch.",
       ],
-      quote: "What is written in the stars can be deciphered in the dust; what is forged in the fire shall outlast the stone.",
-      quoteAuthor: "Hermes Trismegistus, The Emerald Tablet",
-      wordCount: 65,
+      quote: "When you want something, all the universe conspires in helping you to achieve it.",
+      quoteAuthor: "Paulo Coelho",
+      wordCount: 45,
     },
     // Page 3: Table of Contents
     {
@@ -35,461 +34,447 @@ function createPrimaryDemoBook(): Book {
       chapterTitle: "Table of Contents",
       content: "Table of Contents",
       paragraphs: [],
-      wordCount: 40,
+      wordCount: 35,
     },
-    // Page 4: Chapter 1 - Opening
+    // Page 4: Prologue
     {
       id: 4,
       pageNumber: 4,
-      chapterTitle: "The Library of Brass",
-      chapterIndex: 1,
-      illustration: 'alchemist',
+      chapterTitle: "Prologue",
+      chapterIndex: 0,
       content: "",
       paragraphs: [
-        "In the winter of my forty-second year, when the Mediterranean winds carried the scent of crushed cedar and salt across the harbour of Alexandria, I discovered the third key.",
-        "For three centuries, the scholars of the Western guilds had maintained that the subterranean vaults beneath the ancient Serapeum were destroyed by the great conflagration. They had not accounted for the water gates. Beneath the cisterns where the Nile floods were measured, behind sixteen paces of mortar and basalt, there lay a chamber untouched by sun or sovereign.",
-        "It was not books made of parchment that lined those subterranean galleries, but thin leaves of beaten brass, inscribed with diamond points in a script that antedated the Ptolemies.",
+        "The alchemist picked up a book that someone in the caravan had brought. Leafing through the pages, he found a story about Narcissus.",
+        "The alchemist knew the legend of Narcissus, a youth who knelt daily beside a lake to contemplate his own beauty. He was so fascinated by himself that, one morning, he fell into the lake and drowned. At the spot where he fell, a flower was born, which was called the narcissus.",
+        "But this was not how the author of the book ended the story.",
       ],
-      footnote: "* The Serapeum of Alexandria, partly preserved through subterranean hydraulic canals.",
-      wordCount: 165,
+      wordCount: 120,
     },
-    // Page 5: Chapter 1 - Cont.
+    // Page 5: Prologue Cont.
     {
       id: 5,
       pageNumber: 5,
-      chapterTitle: "The Library of Brass",
-      chapterIndex: 1,
+      chapterTitle: "Prologue",
+      chapterIndex: 0,
       content: "",
       paragraphs: [
-        "My lantern cast long, amber shadows across the interlocking dials. Each shelf was mounted on bronze gimbals, weighted so that the earth's natural tremors would never cast the plates onto the flags. I drew my finger across the uppermost plate; the metal was cool, vibrating with a resonance so faint it seemed more like a memory of sound than sound itself.",
-        "There were three figures engraved upon the central leaf: a phoenix perched upon an armillary sphere, a serpent coiled about an hourglass, and seven stars aligned with the constellation of Cygnus.",
-        "To read brass requires patience unlike the reading of ink. One must hold the lamp at an oblique angle of thirty degrees, allowing the shadow cast by the incision to create the illusion of dark letters on a field of burnished gold.",
+        "He said that when Narcissus died, the goddesses of the forest appeared and found the lake, which had been fresh water, transformed into a lake of salty tears.",
+        "“Why do you weep?” the goddesses asked.",
+        "“I weep for Narcissus,” the lake replied.",
+        "“Ah, it is no surprise that you weep for Narcissus,” they said, “for though we always pursued him in the forest, you were the only one who could contemplate his beauty close at hand.”",
+        "“Was Narcissus beautiful?” the lake asked.",
       ],
-      quote: "Knowledge is not acquired; it is remembered from the time before the elements parted.",
-      quoteAuthor: "Archimedes of Syracuse (attr.)",
-      wordCount: 178,
+      wordCount: 130,
     },
-    // Page 6: Chapter 1 - Cont.
+    // Page 6: Prologue Conclusion
     {
       id: 6,
       pageNumber: 6,
-      chapterTitle: "The Library of Brass",
-      chapterIndex: 1,
+      chapterTitle: "Prologue",
+      chapterIndex: 0,
       content: "",
       paragraphs: [
-        "By midnight, the translation began to take form upon my notebook. The text spoke of an instrument known as the Astrolabe of Tides—a mechanism capable of calculating not merely the positions of celestial bodies, but the ebb and flow of human fortunes across the empires.",
-        "The author identified himself only as 'The Keeper of the Seventh Seal'. He warned that whoever should assemble the three fragments must possess the courage to unsee what the glass reveals.",
-        "I looked down at my ink-stained hands. How many years had I spent in dusty garrets in Padua, chasing the rumors of this vault? I was no longer young, yet in that subterranean silence, with the distant rumble of the sea reverberating through forty cubits of limestone, I felt the sharp, electric vigor of a youth embarking upon his maiden voyage.",
-      ],
-      wordCount: 172,
-    },
-    // Page 7: Chapter 1 - Conclusion
-    {
-      id: 7,
-      pageNumber: 7,
-      chapterTitle: "The Library of Brass",
-      chapterIndex: 1,
-      illustration: 'hourglass',
-      content: "",
-      paragraphs: [
-        "Before ascending to the upper world, I carefully wrapped the brass folios in oiled silk and placed them within my leather satchel. The morning light was just beginning to streak the eastern sky above the Pharos when I emerged through the well-head of the spice merchant's courtyard.",
-        "A flock of white gulls circled the harbour bastions, their cries sharp in the crisp dawn air. In the bay, the Venetian galleasses were unfurling their sails, preparing for the long voyage across the Levant. I knew my own journey had only just commenced.",
-      ],
-      footnote: "† Recorded in the journal of Lysander Thorne, preserved in the Laurentian Library.",
-      wordCount: 125,
-    },
-    // Page 8: Chapter 2 - The Constellation Vault
-    {
-      id: 8,
-      pageNumber: 8,
-      chapterTitle: "The Constellation Vault",
-      chapterIndex: 2,
-      illustration: 'constellation',
-      content: "",
-      paragraphs: [
-        "The crossing from Alexandria to Candia occupied twelve days of foul weather and contrary tides. The Venetian captain, a superstitious veteran of the Lepanto campaigns named Morosini, crossed himself whenever he glanced toward the iron chest in my cabin.",
-        "'There are things, Signor Thorne,' he murmured one evening over salt beef and watered wine, 'that the deep waters are meant to keep hidden. When the compass spins without iron, the seabed is opening its mouth.'",
-        "He was not entirely wrong. For three consecutive nights, as we passed the shoals south of Crete, the needle of my binnacle ceased to point north. Instead, it aligned directly with the rising of Antares in the heart of Scorpio.",
-      ],
-      wordCount: 154,
-    },
-    // Page 9: Chapter 2 - Cont.
-    {
-      id: 9,
-      pageNumber: 9,
-      chapterTitle: "The Constellation Vault",
-      chapterIndex: 2,
-      content: "",
-      paragraphs: [
-        "On the island of Crete, high in the crags above the ruined palace of Knossos, there resides a brotherhood of monks who have guarded the mountain observatory since the fall of Constantinople.",
-        "Their abbot, Father Callistus, received me in a scriptorium illuminated only by alabaster lamps filled with pressed olive oil. When I revealed the brass leaf bearing the seal of Cygnus, the old man remained motionless for a full minute, his breath shallow in the mountain cold.",
-        "'We have awaited this since the year of the Great Comet,' he said softly, rising from his stool. 'Follow me, and walk only where the stones are dressed with lime.'",
-      ],
-      quote: "The sky is a mechanism of dials; we who watch are merely the pendulums counting the hours.",
-      quoteAuthor: "Callistus of Mount Ida",
-      wordCount: 162,
-    },
-    // Page 10: Chapter 2 - Cont.
-    {
-      id: 10,
-      pageNumber: 10,
-      chapterTitle: "The Constellation Vault",
-      chapterIndex: 2,
-      content: "",
-      paragraphs: [
-        "He led me down a winding staircase cut into the living mountain. The air grew colder, crisp and mineral, smelling of ancient snow and limestone water. We arrived at a circular dome thirty cubits in diameter.",
-        "The ceiling was not stone, but a dome of polished obsidian, pierced with thousands of microscopic apertures that admitted the pure starlight from the summit. By some optical virtue known only to the ancient builders, the stars appeared magnified tenfold, their colours—amber, sapphire, and emerald—pulsing against the pitch darkness.",
-        "In the exact centre of the chamber stood a pedestal of white porphyry, carved with twelve concentric rings that could be rotated by silver levers.",
-      ],
-      wordCount: 158,
-    },
-    // Page 11: Chapter 2 - Conclusion
-    {
-      id: 11,
-      pageNumber: 11,
-      chapterTitle: "The Constellation Vault",
-      chapterIndex: 2,
-      content: "",
-      paragraphs: [
-        "Together, Callistus and I aligned the rings according to the ephemeris inscribed upon the brass plates of Alexandria. As the final dial clicked into place, a beam of concentrated starlight struck the centre of the pedestal.",
-        "A hidden compartment sprang open with the soft chime of a silver spring. Within lay the second relic: a crystal prism cut with sixty-four facets, within which floated a minute sphere of liquid gold that never touched the prism's walls.",
-        "'The Heart of the Astrolabe,' whispered Callistus. 'Now you must seek the Navigator's Wheel in the city of the Doges.'",
-      ],
-      footnote: "‡ The mechanism reflects the astronomical principles of Claudius Ptolemy's Almagest.",
-      wordCount: 138,
-    },
-    // Page 12: Chapter 3 - The Clockwork Compass
-    {
-      id: 12,
-      pageNumber: 12,
-      chapterTitle: "The Clockwork Compass",
-      chapterIndex: 3,
-      illustration: 'compass',
-      content: "",
-      paragraphs: [
-        "Venice in the spring of 1675 was a city of mist and carnival masks. Behind the drawn shutters of the Palazzo Dandolo on the Grand Canal, Maestro Giacomo Bellini worked by the light of twelve tallow candles.",
-        "Bellini was the last master horologist who understood the secret escapements of the Byzantine clock-makers. For forty days, he examined the brass plates and the floating golden sphere.",
-        "'This is not a timepiece for hours or minutes, Lysander,' he declared, removing his magnifying loupe and rubbing his rheumy eyes. 'This counts the precession of the equinoxes. One full revolution of the outer ring requires twenty-five thousand, nine hundred and twenty solar years.'",
-      ],
-      wordCount: 150,
-    },
-    // Page 13: Chapter 3 - Cont.
-    {
-      id: 13,
-      pageNumber: 13,
-      chapterTitle: "The Clockwork Compass",
-      chapterIndex: 3,
-      content: "",
-      paragraphs: [
-        "To house the crystal prism, Bellini forged a casing from electrum—an alloy of silver and gold sacred to the ancient temple smiths. He fitted it with twenty-four jeweled bearings cut from Burmese rubies, ensuring that the friction of the moving parts would approach zero.",
-        "When the assembly was completed, the instrument was no larger than a mariner's pocket compass, yet it possessed a weight and density that surprised everyone who held it.",
-        "When placed upon a flat marble table, it began to tick. The rhythm was unlike any clock ever made: three rapid beats followed by a prolonged silence of seven seconds, perfectly synchronised with the tidal surges of the Venetian lagoon outside our window.",
-      ],
-      quote: "Time is the canvas upon which the universe paints the illusion of change.",
-      quoteAuthor: "Giacomo Bellini, Treatise on Celestial Escapements",
-      wordCount: 168,
-    },
-    // Page 14: Chapter 3 - Cont.
-    {
-      id: 14,
-      pageNumber: 14,
-      chapterTitle: "The Clockwork Compass",
-      chapterIndex: 3,
-      content: "",
-      paragraphs: [
-        "On the night before my departure for the Atlantic voyage, a visitor arrived at the palazzo. He wore the black mantle of the Council of Ten and spoke with the measured cadence of one accustomed to life-and-death authority.",
-        "'The Republic is aware of what you have constructed, Signor Thorne,' the visitor stated, declining the offered chair. 'There are powers in Europe who would pay the ransom of three kingdoms for such an instrument. Our advice is simple: sail beyond the Pillars of Hercules before the spring fleet arrives from Spain.'",
-        "He placed a purse of gold ducats on the table and departed into the foggy canal without another word.",
-      ],
-      wordCount: 145,
-    },
-    // Page 15: Chapter 3 - Conclusion
-    {
-      id: 15,
-      pageNumber: 15,
-      chapterTitle: "The Clockwork Compass",
-      chapterIndex: 3,
-      illustration: 'tower',
-      content: "",
-      paragraphs: [
-        "By midnight, my chartered caravel was gliding past the Lido, heading south into the Adriatic. The city of lagoons faded behind us like a dream of marble and water.",
-        "I stood at the quarterdeck with the compass resting in my palm. Under the light of the full moon, the liquid golden sphere began to glow with an ethereal opalescent sheen, pointing unerringly toward the open ocean beyond Gibraltar.",
-      ],
-      footnote: "§ The caravel 'San Zaccaria', captained by Matteo of Ragusa.",
-      wordCount: 98,
-    },
-    // Page 16: Chapter 4 - The Whispering Sands
-    {
-      id: 16,
-      pageNumber: 16,
-      chapterTitle: "The Whispering Sands",
-      chapterIndex: 4,
-      illustration: 'feather',
-      content: "",
-      paragraphs: [
-        "Beyond the straits of Gibraltar, where the ocean swells grow long and stately under the trade winds, the compass ceased to follow the geography of charted coasts. It led us past the Fortunate Isles, deep into the great Sargasso Sea where floating meadows of gold-green weed blanket the surface for leagues.",
-        "The crew grew anxious as the sound of the hull cutting through weed replaced the crisp splash of open water. 'No ship has ever entered this weed and returned to Lisbon,' muttered the boatswain.",
-        "Yet the compass continued its steady three-beat rhythm, drawing us toward an eye of clear sapphire water in the heart of the ocean.",
-      ],
-      wordCount: 145,
-    },
-    // Page 17: Chapter 4 - Cont.
-    {
-      id: 17,
-      pageNumber: 17,
-      chapterTitle: "The Whispering Sands",
-      chapterIndex: 4,
-      content: "",
-      paragraphs: [
-        "On the twenty-seventh day of ocean sailing, at the exact hour when the sun kissed the western horizon, the lookout shouted from the crosstrees: 'Land on the starboard bow! A tower of crystal!'",
-        "It was not an island of earth or rock, but a ring of translucent white stone rising five fathoms above the calm sea, enclosing a lagoon so clear that the seabed, eighty cubits below, appeared within arm's reach.",
-        "We anchored the caravel in the lee of the outer ring and launched the longboat. As my boots touched the white stone, a gentle warmth emanated through the soles of my leather shoes. The stone was alive with a slow, rhythmic pulse matching that of our electrum compass.",
-      ],
-      quote: "The earth holds islands that do not belong to the kingdoms of men, but to the architects of the stars.",
-      quoteAuthor: "Lysander Thorne, Ocean Journal",
-      wordCount: 162,
-    },
-    // Page 18: Chapter 4 - Cont.
-    {
-      id: 18,
-      pageNumber: 18,
-      chapterTitle: "The Whispering Sands",
-      chapterIndex: 4,
-      content: "",
-      paragraphs: [
-        "In the centre of the lagoon stood an open pavilion supported by twelve slender columns of green basalt. Upon the central altar rested an open book made not of paper or brass, but of sheets of polished amber.",
-        "I approached the altar alone, carrying the compass and the brass leaves of Alexandria. As I placed the compass in the circular indentation on the amber book's cover, the pages began to turn of their own accord, driven by an unseen, gentle draft of warm air.",
-        "Each leaf of amber revealed an illuminated diagram of the solar system, with planets whose orbits had never been witnessed by Galileo or Kepler.",
-      ],
-      wordCount: 144,
-    },
-    // Page 19: Chapter 4 - Conclusion
-    {
-      id: 19,
-      pageNumber: 19,
-      chapterTitle: "The Whispering Sands",
-      chapterIndex: 4,
-      content: "",
-      paragraphs: [
-        "It was then that I understood the true nature of the Great Work. The alchemists of old were not seeking to turn lead into common gold. Gold was merely the symbol of the perfected human intellect—a mind freed from the gravity of ignorance.",
-        "The island was not a tomb, but an observatory established before the melting of the great northern glaciers, waiting for the human family to mature sufficiently to read its lessons.",
-      ],
-      footnote: "¶ Preserved in fragments in the Royal Society archive, London.",
-      wordCount: 104,
-    },
-    // Page 20: Chapter 5 - The Celestial Crucible
-    {
-      id: 20,
-      pageNumber: 20,
-      chapterTitle: "The Celestial Crucible",
-      chapterIndex: 5,
-      illustration: 'tree',
-      content: "",
-      paragraphs: [
-        "For seven days and nights, I transcribed the contents of the amber volume into my notebook. I drew the planetary tables, the harmonic progressions of the tides, and the medicinal properties of forty-eight herbs unknown to European botanists.",
-        "When the work was finished, I felt a deep, abiding tranquility settle upon my spirit. The ambitions of my earlier years—the craving for academic honours, the fear of poverty, the bitterness of intellectual rivalries—all vanished like mist before the midday sun.",
-        "I knew that I could not carry the amber book away with me; it belonged to the ocean and the stars. I took only the knowledge inscribed in my own hand and the memory of that starlit lagoon.",
-      ],
-      wordCount: 156,
-    },
-    // Page 21: Chapter 5 - Cont.
-    {
-      id: 21,
-      pageNumber: 21,
-      chapterTitle: "The Celestial Crucible",
-      chapterIndex: 5,
-      content: "",
-      paragraphs: [
-        "On the eighth morning, we weighed anchor and set our course eastward toward the coast of Portugal. As our caravel sailed past the outer reef, I looked back one final time.",
-        "The white ring and the basalt pavilion were slowly submerging beneath the turquoise waves, returning to the sanctuary of the ocean floor until the cycle of the precession should summon them forth once more.",
-        "The compass in my pocket ceased its ticking and became silent, its liquid sphere resting peacefully at the centre of the ruby bearings.",
-      ],
-      quote: "He who has seen the harmony of the spheres can never again walk the earth as a stranger.",
-      quoteAuthor: "Pythagoras of Samos",
-      wordCount: 135,
-    },
-    // Page 22: Epilogue & Historical Note
-    {
-      id: 22,
-      pageNumber: 22,
-      chapterTitle: "Epilogue & Historical Note",
-      chapterIndex: 6,
-      content: "",
-      paragraphs: [
-        "Lysander Thorne returned to Europe in the autumn of 1676. He lived the remainder of his life in a small cottage near Oxford, teaching mathematics to students and cultivating a remarkable medicinal garden.",
-        "His manuscripts were bequeathed to the Bodleian Library upon his death in 1704, with the instruction that they should be opened only by those who seek truth for the betterment of humankind rather than for power or coin.",
-        "This digital collector's volume has been faithfully reconstructed to honor the spirit of his journey.",
+        "“Who could know that better than you?” the goddesses asked in wonder. “After all, it was by your banks that he knelt each day!”",
+        "The lake was silent for some time. Finally, it said: “I weep for Narcissus, but I never noticed that Narcissus was beautiful. I weep because each time he knelt by my banks, I could see, in the depths of his eyes, my own beauty reflected.”",
+        "“What a lovely story,” the alchemist thought.",
       ],
       wordCount: 110,
     },
-    // Page 23: Back Matter - About the Edition
+    // Page 7: Part One Introduction
     {
-      id: 23,
-      pageNumber: 23,
-      chapterTitle: "Colophon",
-      content: "Colophon",
+      id: 7,
+      pageNumber: 7,
+      chapterTitle: "Part One",
+      content: "Part One",
       paragraphs: [
-        "DocuBook Real-Book Edition #001",
-        "Set in EB Garamond and Cinzel Display typefaces, modeled upon the Venetian printing types of Nicolas Jenson (1470).",
-        "Engineered with tactile 3D physical page-turn physics, deckled edge layer simulation, and multi-source ambient lighting.",
-        "Alexandria • Venice • Oxford",
+        "The boy's name was Santiago. Dusk was falling as the boy arrived with his herd at an abandoned church. The roof had fallen in long ago, and an enormous sycamore had grown on the spot where the sacristy had once stood.",
+        "He decided to spend the night there. He saw to it that all the sheep entered through the ruined gate, and then laid some planks across it to prevent the flock from wandering away during the night.",
       ],
-      wordCount: 52,
+      wordCount: 115,
     },
-    // Page 24: Finis / Back Cover
+    // Page 8: Santiago's Flocks
     {
-      id: 24,
-      pageNumber: 24,
-      isBackCover: true,
-      content: "Finis",
+      id: 8,
+      pageNumber: 8,
+      chapterTitle: "Part One",
+      content: "",
       paragraphs: [
-        "Finis - End of Volume",
-        "Completed reading 'The Alchemist of Alexandria' by Lysander Thorne.",
-        "Total Pages: 24 • Words: 3,450",
+        "He swept the floor with his jacket and lay down, using the book he had just finished reading as a pillow. He told himself that he would have to start reading thicker books: they lasted longer, and made more comfortable pillows.",
+        "When he woke, it was still dark, and looking up, he could see the stars through the half-destroyed roof. He had had the same dream that he had had a week ago, and once again he had awakened before it ended.",
       ],
-      wordCount: 20,
+      wordCount: 120,
+    },
+    // Page 9: Chapter 1 - The Two Dreams (Matches Image 3 & 4!)
+    {
+      id: 9,
+      pageNumber: 9,
+      chapterTitle: "The Two Dreams",
+      chapterIndex: 1,
+      content: "",
+      paragraphs: [
+        "The boy had a recurring dream.",
+        "He dreamed that he was in Egypt, standing before the pyramids.",
+        "In the dream, a treasure was hidden there. And each time he tried to reach it, something stopped him.",
+        "One night, the boy decided to seek out an old king who was said to understand the language of dreams.",
+        "“I keep dreaming about a treasure in the pyramids,” the boy told him.",
+        "The king listened and smiled.",
+      ],
+      wordCount: 135,
+    },
+    // Page 10: Chapter 1 - Cont. (Matches Image 4!)
+    {
+      id: 10,
+      pageNumber: 10,
+      chapterTitle: "The Two Dreams",
+      chapterIndex: 1,
+      content: "",
+      paragraphs: [
+        "One night, the boy decided to seek out an old king who was said to understand the language of dreams.",
+        "“I keep dreaming about a treasure in the pyramids,” the boy told him.",
+        "The king listened and smiled.",
+        "“When you want something, all the universe conspires in helping you to achieve it.”",
+        "The boy asked, “How will I know it’s the treasure I’m meant to find?”",
+        "The king replied, “Everything tells you something.”",
+      ],
+      wordCount: 140,
+    },
+    // Page 11: The Secret of Happiness
+    {
+      id: 11,
+      pageNumber: 11,
+      chapterTitle: "The Secret of Happiness",
+      chapterIndex: 2,
+      content: "",
+      paragraphs: [
+        "A certain shopkeeper sent his son to learn about the secret of happiness from the wisest man in the world. The lad wandered through the desert for forty days, and finally came upon a beautiful castle, high atop a mountain.",
+        "There the sage lived. Instead of finding a saintly man, though, our hero entered a hall where activity abounded: tradesmen came and went, people were conversing in corners, and a small orchestra was playing soft melodies.",
+      ],
+      wordCount: 125,
+    },
+    // Page 12: The Drops of Oil
+    {
+      id: 12,
+      pageNumber: 12,
+      chapterTitle: "The Secret of Happiness",
+      chapterIndex: 2,
+      content: "",
+      paragraphs: [
+        "The wise man listened attentively to the boy's reason for coming, but told him he didn't have time just then to explain the secret of happiness. He suggested that the boy look around the palace and return in two hours.",
+        "“Meanwhile, I want to ask you to do something,” said the wise man, handing the boy a teaspoon that held two drops of oil. “As you wander around, carry this spoon with you without spilling a drop of the oil.”",
+      ],
+      quote: "The secret of happiness is to see all the marvels of the world, and never to forget the two drops of oil on the spoon.",
+      quoteAuthor: "The Wise Sage of the Mountain",
+      wordCount: 145,
+    },
+    // Page 13: The Journey Across the Desert
+    {
+      id: 13,
+      pageNumber: 13,
+      chapterTitle: "The Desert Journey",
+      chapterIndex: 3,
+      content: "",
+      paragraphs: [
+        "The desert was vast and silent, an endless sea of sand shifting beneath the hooves of the camels. The boy rode alongside the Englishman, whose nose was perpetually buried in thick alchemical treatises.",
+        "“I am trying to find the Alchemist,” the Englishman said. “He lives at the oasis of Al-Fayoum, and knows how to turn any metal into gold with the Philosopher's Stone.”",
+      ],
+      wordCount: 120,
+    },
+    // Page 14: The Language of the World
+    {
+      id: 14,
+      pageNumber: 14,
+      chapterTitle: "The Language of the World",
+      chapterIndex: 4,
+      content: "",
+      paragraphs: [
+        "The desert wind whispered secrets to those who knew how to listen. Santiago learned that the world had a soul, and that anyone who understood that soul could understand the language of things.",
+        "He saw that lead would play its role until the world had no further need for lead; and then lead would have to turn itself into gold. That was what the alchemists did: they showed that, when we strive to become better than we are, everything around us becomes better, too.",
+      ],
+      wordCount: 130,
+    },
+    // Page 15: The Emerald Tablet
+    {
+      id: 15,
+      pageNumber: 15,
+      chapterTitle: "The Master Work",
+      chapterIndex: 5,
+      content: "",
+      paragraphs: [
+        "“What is the Emerald Tablet?” the boy asked.",
+        "The alchemist took a stick and began to draw in the sand. “It is a direct passage to the Soul of the World. The ancient masters understood that the physical world is only an image and a copy of paradise. The existence of this world is simply a guarantee that there exists a world that is perfect.”",
+      ],
+      footnote: "* The Emerald Tablet is an ancient text attributed to Hermes Trismegistus.",
+      wordCount: 110,
+    },
+    // Page 16: Epilogue & Finis
+    {
+      id: 16,
+      pageNumber: 16,
+      isBackCover: true,
+      chapterTitle: "Epilogue",
+      content: "",
+      paragraphs: [
+        "The boy dug in the roots of the sycamore at the abandoned church in Spain, laughing as his shovel struck the heavy wooden chest filled with ancient gold Spanish coins.",
+        "“I am coming, Fatima,” he said.",
+      ],
+      wordCount: 85,
     },
   ];
 
   const chapters: Chapter[] = [
-    {
-      id: 'ch-1',
-      title: 'Chapter 1: The Library of Brass',
-      pageNumber: 4,
-      previewSnippet: 'In the winter of my forty-second year, when Mediterranean winds carried the scent of crushed cedar...',
-    },
-    {
-      id: 'ch-2',
-      title: 'Chapter 2: The Constellation Vault',
-      pageNumber: 8,
-      previewSnippet: 'The crossing from Alexandria to Candia occupied twelve days of foul weather and contrary tides...',
-    },
-    {
-      id: 'ch-3',
-      title: 'Chapter 3: The Clockwork Compass',
-      pageNumber: 12,
-      previewSnippet: 'Venice in the spring of 1675 was a city of mist and carnival masks. Behind drawn shutters...',
-    },
-    {
-      id: 'ch-4',
-      title: 'Chapter 4: The Whispering Sands',
-      pageNumber: 16,
-      previewSnippet: 'Beyond the straits of Gibraltar, where the ocean swells grow long and stately under trade winds...',
-    },
-    {
-      id: 'ch-5',
-      title: 'Chapter 5: The Celestial Crucible',
-      pageNumber: 20,
-      previewSnippet: 'For seven days and nights, I transcribed the contents of the amber volume into my notebook...',
-    },
-    {
-      id: 'ch-6',
-      title: 'Epilogue & Colophon',
-      pageNumber: 22,
-      previewSnippet: 'Lysander Thorne returned to Europe in the autumn of 1676...',
-    },
+    { id: 'ch-prologue', title: 'Prologue', pageNumber: 4, previewSnippet: 'The alchemist picked up a book about Narcissus...' },
+    { id: 'ch-1', title: 'Chapter 1: The Two Dreams', pageNumber: 9, previewSnippet: 'The boy had a recurring dream of Egypt...' },
+    { id: 'ch-2', title: 'Chapter 2: The Secret of Happiness', pageNumber: 11, previewSnippet: 'A shopkeeper sent his son to learn about happiness...' },
+    { id: 'ch-3', title: 'Chapter 3: The Desert Journey', pageNumber: 13, previewSnippet: 'The caravan moved across the silent sands...' },
+    { id: 'ch-4', title: 'Chapter 4: The Language of the World', pageNumber: 14, previewSnippet: 'The boy learned the world had a soul...' },
+    { id: 'ch-5', title: 'Chapter 5: The Master Work', pageNumber: 15, previewSnippet: 'The Emerald Tablet and the Soul of the World...' },
+    { id: 'ch-6', title: 'Epilogue: The Hidden Treasure', pageNumber: 16, previewSnippet: 'Beneath the roots of the sycamore tree...' },
   ];
 
   return {
-    id: 'book-alchemist-alexandria',
-    title: "The Alchemist of Alexandria",
-    author: "Lysander Thorne",
-    coverTheme: 'emerald-vintage',
-    coverSubtitle: "Chronicles of the Forgotten Realm • 24 Pages",
+    id: 'book-alchemist',
+    title: 'The Alchemist',
+    author: 'Paulo Coelho',
+    coverTheme: 'navy-gold',
+    coverSubtitle: 'A Fable About Following Your Dream • 16 Pages',
     fileType: 'sample',
     pages,
     chapters,
     bookmarks: [
       {
-        id: 'bm-demo-1',
-        pageNumber: 4,
-        previewText: 'In the winter of my forty-second year, when the Mediterranean winds...',
+        id: 'bm-alch-1',
+        pageNumber: 9,
+        previewText: 'The boy had a recurring dream. He dreamed that he was in Egypt...',
         createdAt: Date.now() - 3600000,
-        note: 'The discovery of the subterranean brass library',
+        note: 'The Two Dreams chapter opening',
       },
     ],
-    currentPage: 1,
-    readingProgress: 0,
-    totalWords: 3450,
-    totalPages: 24,
+    currentPage: 9,
+    readingProgress: 45,
+    totalWords: 2150,
+    totalPages: 16,
     isFavorite: true,
     category: 'fiction',
-    createdAt: Date.now() - 86400000 * 3,
+    createdAt: Date.now() - 86400000 * 2,
     updatedAt: Date.now(),
   };
 }
 
-const ALICE_IN_WONDERLAND_TEXT = `Chapter I: Down the Rabbit-Hole
+export function createAtomicHabitsBook(): Book {
+  const text = `Chapter 1: The Surprising Power of Atomic Habits
 
-Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, "and what is the use of a book," thought Alice "without pictures or conversations?"
+Success is the product of daily habits—not once-in-a-lifetime transformations.
 
-So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her.
+It is so easy to overestimate the importance of one defining moment and underestimate the value of making small improvements on a daily basis. Too often, we convince ourselves that massive success requires massive action. Whether it is losing weight, building a business, writing a book, winning a championship, or achieving any other goal, we put pressure on ourselves to make some earth-shattering improvement that everyone will talk about.
 
-There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, "Oh dear! Oh dear! I shall be late!" (when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually took a watch out of its waistcoat-pocket, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was just in time to see it pop down a large rabbit-hole under the hedge.
+Meanwhile, improving by 1 percent isn't particularly notable—sometimes it isn't even noticeable—but it can be far more meaningful, especially in the long run. The difference a tiny improvement can make over time is astounding. Here's how the math works out: if you can get 1 percent better each day for one year, you'll end up thirty-seven times better by the time you're done.
 
-In another moment down went Alice after it, never once considering how in the world she was to get out again.
+Habits are the compound interest of self-improvement. The same way that money multiplies through compound interest, the effects of your habits multiply as you repeat them. They seem to make little difference on any given day and yet the impact they deliver over the months and years can be enormous.
 
-The rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down a very deep well.
+Chapter 2: How Your Habits Shape Your Identity
 
-Either the well was very deep, or she fell very slowly, for she had plenty of time as she went down to look about her and to wonder what was going to happen next. First, she tried to look down and make out what she was coming to, but it was too dark to see anything; then she looked at the sides of the well, and noticed that they were filled with cupboards and book-shelves; here and there she saw maps and pictures hung upon pegs. She took down a jar from one of the shelves as she passed; it was labelled "ORANGE MARMALADE", but to her great disappointment it was empty: she did not like to drop the jar for fear of killing somebody underneath, so managed to put it into one of the cupboards as she fell past it.
+The most effective way to change your habits is to focus not on what you want to achieve, but on who you wish to become.
 
-Chapter II: The Pool of Tears
+Your identity emerges out of your habits. Every action is a vote for the type of person you wish to become. No single instance will transform your beliefs, but as the votes build up, the evidence of your new identity grows.
 
-"Curiouser and curiouser!" cried Alice (she was so much surprised, that for the moment she quite forgot how to speak good English); "now I'm opening out like the largest telescope that ever was! Good-bye, feet!" (for when she looked down at her feet, they seemed to be almost out of sight, they were getting so far off). "Oh, my poor little feet, I wonder who will put on your shoes and stockings for you now, dears? I'm sure I shan't be able! I shall be a great deal too far off to trouble myself about you: you must manage the best way you can;—but I must be kind to them," thought Alice, "or perhaps they won't walk the way I want to go! Let me see: I'll give them a new pair of boots every Christmas."
+The real reason habits matter is not because they can get you better results (although they can do that), but because they can change your beliefs about yourself.
 
-Chapter III: A Caucus-Race and a Long Tale
+Chapter 3: The 4 Laws of Behavior Change
 
-They were indeed a queer-looking party that assembled on the bank—the birds with draggled feathers, the animals with their fur clinging close to them, and all dripping wet, cross, and uncomfortable.`;
+If you want to build a better habit, follow the Four Laws:
+1. Make it Obvious.
+2. Make it Attractive.
+3. Make it Easy.
+4. Make it Satisfying.
 
-const MEDITATIONS_TEXT = `Book I: Debts and Lessons
+To break a bad habit, invert these rules: Make it invisible, unattractive, difficult, and unsatisfying.`;
 
-From my grandfather Verus I learned good morals and the government of my temper. From the reputation and remembrance of my father, modesty and a manly character. From my mother, piety and beneficence, and abstinence, not only from evil deeds, but even from evil thoughts; and further, simplicity in my way of living, far removed from the habits of the rich.
-
-From my great-grandfather, not to have frequented public schools, and to have had good teachers at home, and to have understood that on such things a man should spend liberally.
-
-From my governor, to be neither of the green nor of the blue party at the games in the Circus, nor a partizan either of the Parmularius or the Scutarius at the gladiators' fights; from him too I learned endurance of labour, and to want little, and to work with my own hands, and not to meddle with other people's affairs, and not to be ready to listen to slander.
-
-Book II: On the River Gran
-
-When you wake up in the morning, tell yourself: The people I deal with today will be meddling, ungrateful, arrogant, dishonest, jealous, and surly. They are like this because they cannot distinguish good from evil. But I have seen the beauty of good, and the ugliness of evil, and have recognized that the wrongdoer has a nature related to my own—not of the same blood or birth, but the same mind, and possessing a share of the divine.
-
-None of them can hurt me. No one can implicate me in ugliness. Nor can I feel angry at my kin, or hate him. We were born to work together like feet, hands, and eyes, like the two rows of teeth, upper and lower. To obstruct each other is unnatural. To feel anger at someone, to turn your back on him: these are obstructions.`;
-
-const ART_OF_WAR_TEXT = `Chapter I: Laying Plans
-
-Sun Tzu said: The art of war is of vital importance to the State. It is a matter of life and death, a road either to safety or to ruin. Hence it is a subject of inquiry which can on no account be neglected.
-
-The art of war, then, is governed by five constant factors, to be taken into account in one's deliberations, when seeking to determine the conditions obtaining in the field. These are: The Moral Law; Heaven; Earth; The Commander; Method and discipline.
-
-The Moral Law causes the people to be in complete accord with their ruler, so that they will follow him regardless of their lives, undismayed by any danger. Heaven signifies night and day, cold and heat, times and seasons. Earth comprises distances, great and small; danger and security; open ground and narrow passes; the chances of life and death.
-
-All warfare is based on deception. Hence, when able to attack, we must seem unable; when using our forces, we must seem inactive; when we are near, we must make the enemy believe we are far away; when far away, we must make him believe we are near.
-
-Chapter II: Waging War
-
-Sun Tzu said: In the operations of war, where there are in the field a thousand swift chariots, as many heavy chariots, and a hundred thousand mail-clad soldiers, with provisions enough to carry them a thousand li, the expenditure at home and at the front will reach the total of a thousand ounces of silver per day. Such is the cost of raising an army of 100,000 men.`;
-
-export const SAMPLE_BOOKS: Book[] = [
-  createPrimaryDemoBook(),
-  createBookFromText(ALICE_IN_WONDERLAND_TEXT, {
-    title: "Alice's Adventures in Wonderland",
-    author: 'Lewis Carroll',
-    coverTheme: 'navy-gold',
-    fileType: 'sample',
-    wordsPerPage: 220,
-  }),
-  createBookFromText(MEDITATIONS_TEXT, {
-    title: 'Meditations',
-    author: 'Marcus Aurelius',
+  const book = createBookFromText(text, {
+    title: 'Atomic Habits',
+    author: 'James Clear',
     coverTheme: 'classic-leather',
     fileType: 'sample',
-    wordsPerPage: 210,
-  }),
-  createBookFromText(ART_OF_WAR_TEXT, {
-    title: 'The Art of War',
-    author: 'Sun Tzu',
+    wordsPerPage: 180,
+  });
+  book.id = 'book-atomic-habits';
+  book.currentPage = 1;
+  book.readingProgress = 12;
+  book.isFavorite = true;
+  book.category = 'self-help';
+  return book;
+}
+
+export function createSapiensBook(): Book {
+  const text = `Part One: The Cognitive Revolution
+
+About 70,000 years ago, organisms belonging to the species Homo sapiens started to form even more elaborate structures called cultures. The subsequent development of these human cultures is called history.
+
+Three important revolutions shaped the course of history: the Cognitive Revolution kick-started history about 70,000 years ago. The Agricultural Revolution sped it up about 12,000 years ago. The Scientific Revolution, which got under way only 500 years ago, may well end history and start something completely different.
+
+What was the secret of Sapiens' success? How did we manage to settle in so many distant and ecologically diverse habitats so rapidly? The secret was our unique ability to speak about things that do not exist: fiction, myths, and shared stories.
+
+Part Two: The Agricultural Revolution
+
+For 2.5 million years humans fed themselves by gathering edible plants and hunting wild animals. All this changed some 10,000 years ago when Sapiens began to devote almost all their time and effort to manipulating the lives of a few animal and plant species.
+
+This transition to agriculture was not necessarily an easier life. The average farmer worked harder than the average hunter-gatherer, and got a worse diet in return. The Agricultural Revolution was history's biggest fraud.`;
+
+  const book = createBookFromText(text, {
+    title: 'Sapiens: A Brief History of Humankind',
+    author: 'Yuval Noah Harari',
+    coverTheme: 'parchment-gold',
+    fileType: 'sample',
+    wordsPerPage: 190,
+  });
+  book.id = 'book-sapiens';
+  book.currentPage = 1;
+  book.readingProgress = 28;
+  book.isFavorite = true;
+  book.category = 'history';
+  return book;
+}
+
+export function createPsychologyOfMoneyBook(): Book {
+  const text = `Introduction: The Greatest Show On Earth
+
+Doing well with money has a little to do with how smart you are and a lot to do with how you behave. And behavior is hard to teach, even to really smart people.
+
+A genius who loses control of their emotions can be a financial disaster. The opposite is also true. Ordinary folks with no financial education can be wealthy if they have a handful of behavioral skills that have nothing to do with formal measures of intelligence.
+
+Chapter 1: No One's Crazy
+
+Your personal experiences with money make up maybe 0.00000001% of what’s happened in the world, but maybe 80% of how you think the world works.
+
+People from different generations, raised by different parents who earned different incomes and held different values in different parts of the world, learn vastly different lessons.
+
+Chapter 2: Luck & Risk
+
+Nothing is as good or as bad as it seems. Luck and risk are both the reality that every outcome in life is guided by forces other than individual effort.`;
+
+  const book = createBookFromText(text, {
+    title: 'The Psychology of Money',
+    author: 'Morgan Housel',
+    coverTheme: 'emerald-vintage',
+    fileType: 'sample',
+    wordsPerPage: 190,
+  });
+  book.id = 'book-psychology-money';
+  book.currentPage = 1;
+  book.readingProgress = 65;
+  book.isFavorite = true;
+  book.category = 'business';
+  return book;
+}
+
+export function createThinkingFastAndSlowBook(): Book {
+  const text = `Part 1: Two Systems
+
+The characters of the story are two systems in the mind:
+System 1 operates automatically and quickly, with little or no effort and no sense of voluntary control.
+System 2 allocates attention to the effortful mental operations that demand it, including complex computations.
+
+When we think of ourselves, we identify with System 2, the conscious, reasoning self that has beliefs, makes choices, and decides what to think about and what to do. But System 1 is the effortless originator of impressions and feelings that are the main sources of the explicit beliefs and deliberate choices of System 2.
+
+The automatic operations of System 1 generate surprisingly complex patterns of ideas, but only the slower System 2 can construct thoughts in an orderly series of steps.`;
+
+  const book = createBookFromText(text, {
+    title: 'Thinking, Fast and Slow',
+    author: 'Daniel Kahneman',
+    coverTheme: 'classic-leather',
+    fileType: 'sample',
+    wordsPerPage: 200,
+  });
+  book.id = 'book-thinking-fast-slow';
+  book.category = 'science';
+  return book;
+}
+
+export function createFourAgreementsBook(): Book {
+  const text = `The Four Agreements: A Practical Guide to Personal Freedom
+
+1. Be Impeccable With Your Word:
+Speak with integrity. Say only what you mean. Avoid using the word to speak against yourself or to gossip about others. Use the power of your word in the direction of truth and love.
+
+2. Don't Take Anything Personally:
+Nothing others do is because of you. What others say and do is a projection of their own reality, their own dream. When you are immune to the opinions and actions of others, you won't be the victim of needless suffering.
+
+3. Don't Make Assumptions:
+Find the courage to ask questions and to express what you really want. Communicate with others as clearly as you can to avoid misunderstandings, sadness, and drama.
+
+4. Always Do Your Best:
+Your best is going to change from moment to moment; it will be different when you are healthy as opposed to sick. Under any circumstance, simply do your best, and you will avoid self-judgment, self-abuse, and regret.`;
+
+  const book = createBookFromText(text, {
+    title: 'The Four Agreements',
+    author: 'Don Miguel Ruiz',
     coverTheme: 'burgundy-royal',
     fileType: 'sample',
-    wordsPerPage: 210,
-  }),
+    wordsPerPage: 180,
+  });
+  book.id = 'book-four-agreements';
+  book.category = 'philosophy';
+  return book;
+}
+
+export function createIkigaiBook(): Book {
+  const text = `Ikigai: The Japanese Secret to a Long and Happy Life
+
+According to the Japanese, everyone has an ikigai—a reason for being. Some people have found their ikigai, while others are still looking, though they carry it within them.
+
+Our ikigai is hidden deep inside each of us, and finding it requires a patient search. As those from Okinawa—the island with the most centenarians in the world—will tell you, the key to a long and fulfilling life is finding your purpose and staying active until the very end.
+
+The 10 Rules of Ikigai:
+1. Stay active; don’t retire.
+2. Take it slow.
+3. Don’t fill your stomach (eat to 80% fullness).
+4. Surround yourself with good friends.
+5. Get in shape for your next birthday.
+6. Smile.
+7. Reconnect with nature.
+8. Give thanks.
+9. Live in the moment.
+10. Follow your ikigai.`;
+
+  const book = createBookFromText(text, {
+    title: 'IKIGAI: The Japanese Secret to a Long and Happy Life',
+    author: 'Héctor García & Francesc Miralles',
+    coverTheme: 'navy-gold',
+    fileType: 'sample',
+    wordsPerPage: 180,
+  });
+  book.id = 'book-ikigai';
+  book.category = 'lifestyle';
+  return book;
+}
+
+export function createDeepWorkBook(): Book {
+  const text = `Chapter 1: Deep Work Is Valuable
+
+Deep work: Professional activities performed in a state of distraction-free concentration that push your cognitive capabilities to their limit. These efforts create new value, improve your skill, and are hard to replicate.
+
+Shallow work: Noncognitively demanding, logistical-style tasks, often performed while distracted. These efforts tend not to create much new value in the world and are easy to replicate.
+
+In our current economy, the ability to perform deep work is becoming increasingly rare at exactly the same time it is becoming increasingly valuable. As a consequence, the few who cultivate this skill, and then make it the core of their working life, will thrive.`;
+
+  const book = createBookFromText(text, {
+    title: 'Deep Work',
+    author: 'Cal Newport',
+    coverTheme: 'burgundy-royal',
+    fileType: 'sample',
+    wordsPerPage: 190,
+  });
+  book.id = 'book-deep-work';
+  book.category = 'business';
+  return book;
+}
+
+export const SAMPLE_BOOKS: Book[] = [
+  createTheAlchemistBook(),
+  createAtomicHabitsBook(),
+  createSapiensBook(),
+  createPsychologyOfMoneyBook(),
+  createThinkingFastAndSlowBook(),
+  createFourAgreementsBook(),
+  createIkigaiBook(),
+  createDeepWorkBook(),
 ];

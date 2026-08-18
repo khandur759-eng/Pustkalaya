@@ -23,44 +23,44 @@ export const TableOfContentsModal: React.FC<TableOfContentsModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-[#FDFCF8] border border-[#DCD7C9] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col max-h-[85vh]"
+        className="relative w-full max-w-lg bg-white border border-[#E6E9EF] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col max-h-[85vh]"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#DCD7C9] bg-[#F4F1EA]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E6E9EF] bg-[#F8FAFC]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#5A5A40]/10 border border-[#5A5A40]/30 flex items-center justify-center text-[#5A5A40]">
+            <div className="w-9 h-9 rounded-xl bg-[#EEF0FF] text-[#6677E8] flex items-center justify-center">
               <List className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-serif font-bold text-[#1A1A1A]">Table of Contents</h2>
-              <p className="text-xs text-[#8C8471] font-sans">{book.title}</p>
+              <h2 className="text-base font-serif font-bold text-[#151923]">Table of Contents</h2>
+              <p className="text-xs text-[#667085]">{book.title}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C8471] hover:text-[#1A1A1A] hover:bg-[#E8E4D8] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#98A2B3] hover:text-[#151923] hover:bg-white border border-transparent hover:border-[#E6E9EF] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#FDFCF8] font-sans">
+        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-white font-sans">
           {/* Quick jump to cover */}
           <button
             onClick={() => {
               onSelectPage(1);
               onClose();
             }}
-            className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left border ${
+            className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left border cursor-pointer ${
               currentPage === 1
-                ? 'bg-[#5A5A40]/15 border-[#5A5A40] text-[#1A1A1A]'
-                : 'bg-[#F4F1EA]/60 border-[#DCD7C9] hover:bg-[#F4F1EA] text-[#2C2C2C]'
+                ? 'bg-[#EEF0FF] border-[#6677E8] text-[#151923]'
+                : 'bg-white border-[#E6E9EF] hover:bg-[#F8FAFC] text-[#20242D]'
             }`}
           >
             <div className="flex items-center gap-3">
-              <BookOpen className="w-4 h-4 text-[#5A5A40]" />
+              <BookOpen className="w-4 h-4 text-[#6677E8]" />
               <span className="font-serif font-semibold text-sm">Cover Page</span>
             </div>
-            <span className="text-xs font-sans text-[#8C8471]">Page 1</span>
+            <span className="text-xs text-[#667085]">Page 1</span>
           </button>
 
           {/* Chapters list */}
@@ -76,50 +76,44 @@ export const TableOfContentsModal: React.FC<TableOfContentsModalProps> = ({
                   onSelectPage(chapter.pageNumber);
                   onClose();
                 }}
-                className={`w-full flex flex-col p-3 rounded-xl transition-all text-left border ${
+                className={`w-full flex flex-col p-3 rounded-xl transition-all text-left border cursor-pointer ${
                   isCurrent
-                    ? 'bg-[#5A5A40]/15 border-[#5A5A40] text-[#1A1A1A]'
-                    : 'bg-[#F4F1EA]/60 border-[#DCD7C9] hover:border-[#5A5A40] hover:bg-[#F4F1EA] text-[#2C2C2C]'
+                    ? 'bg-[#EEF0FF] border-[#6677E8] text-[#151923] shadow-xs'
+                    : 'bg-white border-[#E6E9EF] hover:bg-[#F8FAFC] hover:border-[#D5D9E2] text-[#20242D]'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 overflow-hidden mr-2">
-                    <span className="text-xs font-sans font-bold text-[#5A5A40]">
-                      {String(idx + 1).padStart(2, '0')}.
-                    </span>
-                    <span className="font-serif font-medium text-sm truncate">{chapter.title}</span>
-                  </div>
-                  <span className="text-xs font-sans font-medium text-[#8C8471] shrink-0">
-                    p. {chapter.pageNumber}
+                  <span
+                    className={`font-serif font-semibold text-sm ${
+                      isCurrent ? 'text-[#151923]' : 'text-[#20242D]'
+                    }`}
+                  >
+                    {chapter.title}
                   </span>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`text-xs ${
+                        isCurrent ? 'text-[#4B58C7] font-bold' : 'text-[#667085]'
+                      }`}
+                    >
+                      Page {chapter.pageNumber}
+                    </span>
+                    <ChevronRight
+                      className={`w-3.5 h-3.5 ${
+                        isCurrent ? 'text-[#6677E8]' : 'text-[#98A2B3]'
+                      }`}
+                    />
+                  </div>
                 </div>
+
                 {chapter.previewSnippet && (
-                  <p className="text-[11px] text-[#8C8471] line-clamp-1 mt-1 font-serif">
+                  <p className="text-xs text-[#667085] mt-1 line-clamp-1">
                     {chapter.previewSnippet}
                   </p>
                 )}
               </button>
             );
           })}
-
-          {/* Quick jump to back cover */}
-          <button
-            onClick={() => {
-              onSelectPage(book.totalPages);
-              onClose();
-            }}
-            className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left border ${
-              currentPage === book.totalPages
-                ? 'bg-[#5A5A40]/15 border-[#5A5A40] text-[#1A1A1A]'
-                : 'bg-[#F4F1EA]/60 border-[#DCD7C9] hover:bg-[#F4F1EA] text-[#2C2C2C]'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <ChevronRight className="w-4 h-4 text-[#5A5A40]" />
-              <span className="font-serif font-semibold text-sm">Conclusion / Finis</span>
-            </div>
-            <span className="text-xs font-sans text-[#8C8471]">Page {book.totalPages}</span>
-          </button>
         </div>
       </div>
     </div>

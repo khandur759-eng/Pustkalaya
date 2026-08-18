@@ -217,7 +217,7 @@ export class PaperEngine {
       return {
         currentLogicalPage: currentPage,
         totalPages: total,
-        leftPageNumber: 0,
+        leftPageNumber: Math.max(1, currentPage - 1),
         rightPageNumber: currentPage,
         turningPageNumber: currentPage,
         turningBackPageNumber: Math.min(total, currentPage + 1),
@@ -256,7 +256,7 @@ export class PaperEngine {
 
   private preloadCurrentSpread() {
     const cur = this.book.currentPage;
-    this.textureManager.preloadRange(cur - 2, cur + 4);
+    this.textureManager.preloadRange(cur - 3, cur + 4);
   }
 
   private start() {

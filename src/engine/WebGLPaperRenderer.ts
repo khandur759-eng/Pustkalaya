@@ -43,29 +43,41 @@ void main() {
   bool isFront = normal.z >= -0.05;
 
   vec4 texColor;
-  if (isFront) {
-    texColor = texture2D(u_frontTexture, v_uv);
+  if (u_isTurning) {
+    if (u_isLeftPage) {
+      // Backward turning page (lifting from left stack, curling towards right)
+      // When isFront (facing viewer on left), left edge has uv.x=0, spine has uv.x=1:
+      // When flipped over to right side (backside facing viewer), spine has uv.x=0, right edge has uv.x=1:
+      vec2 turningUV = isFront ? vec2(1.0 - v_uv.x, v_uv.y) : v_uv;
+      texColor = isFront ? texture2D(u_frontTexture, turningUV) : texture2D(u_backTexture, turningUV);
+      if (!isFront) normal = -normal;
+    } else {
+      // Forward turning page (lifting from right stack, curling towards left)
+      // When isFront (facing viewer on right), spine has uv.x=0, right edge has uv.x=1:
+      // When flipped over to left side (backside facing viewer), left edge has uv.x=0, spine has uv.x=1:
+      vec2 turningUV = isFront ? v_uv : vec2(1.0 - v_uv.x, v_uv.y);
+      texColor = isFront ? texture2D(u_frontTexture, turningUV) : texture2D(u_backTexture, turningUV);
+      if (!isFront) normal = -normal;
+    }
   } else {
-    // Backside UV has flipped X coordinate so ink reads correctly from left-to-right
-    vec2 backUV = vec2(1.0 - v_uv.x, v_uv.y);
-    texColor = texture2D(u_backTexture, backUV);
-    normal = -normal; // Invert normal for back lighting
+    // Stationary flat page
+    texColor = texture2D(u_frontTexture, v_uv);
   }
 
   // Directional + Ambient Lighting Model
   vec3 lightDir = normalize(u_lightDir);
   float diff = max(dot(normal, lightDir), 0.0);
-  float ambient = 0.78;
-  float lighting = ambient + diff * 0.22;
+  float ambient = 0.82;
+  float lighting = ambient + diff * 0.18;
 
   // Rim / Apex highlight on curved paper crest
   float rim = max(0.0, 1.0 - abs(normal.z));
-  lighting += rim * 0.06;
+  lighting += rim * 0.05;
 
   // Spine gutter shading
   float distToSpine = u_isLeftPage ? (1.0 - v_uv.x) : v_uv.x;
   float gutter = smoothstep(0.0, 0.14, distToSpine);
-  float spineDarken = mix(0.74, 1.0, gutter);
+  float spineDarken = mix(0.78, 1.0, gutter);
 
   // Dynamic cast shadow attenuation from turning page above
   float shadowAtten = 1.0 - clamp(u_castShadow, 0.0, 1.0) * 0.38;
@@ -306,9 +318,13 @@ export class WebGLPaperRenderer {
     }
 
     // --- PASS 2: Render Stationary Right Page (Underneath the turning page) ---
-    const underneathRightPage = curlParams.progress > 0.01 && curlParams.direction === 'forward'
-      ? spreadState.nextRightPageNumber
-      : spreadState.rightPageNumber;
+    const underneathRightPage = isSpread
+      ? (curlParams.progress > 0.01 && curlParams.direction === 'forward'
+          ? spreadState.nextRightPageNumber
+          : spreadState.rightPageNumber)
+      : (curlParams.progress > 0.01
+          ? (curlParams.direction === 'forward' ? spreadState.nextRightPageNumber : spreadState.nextLeftPageNumber)
+          : spreadState.currentLogicalPage);
 
     if (underneathRightPage > 0) {
       const rightTex = textureMgr.getTexture(underneathRightPage);
@@ -332,10 +348,24 @@ export class WebGLPaperRenderer {
     // --- PASS 3: Render Deformable Turning Page ---
     if (curlParams.progress > 0.001) {
       const isForward = curlParams.direction === 'forward';
-      const frontPageNum = isForward ? spreadState.rightPageNumber : spreadState.leftPageNumber;
-      const backPageNum = isForward
-        ? (spreadState.rightPageNumber + 1 <= spreadState.totalPages ? spreadState.rightPageNumber + 1 : 0)
-        : (spreadState.leftPageNumber > 1 ? spreadState.leftPageNumber - 1 : 1);
+      let frontPageNum = 0;
+      let backPageNum = 0;
+
+      if (isSpread) {
+        frontPageNum = isForward ? spreadState.rightPageNumber : spreadState.leftPageNumber;
+        backPageNum = isForward
+          ? (spreadState.rightPageNumber + 1 <= spreadState.totalPages ? spreadState.rightPageNumber + 1 : 0)
+          : (spreadState.leftPageNumber > 1 ? spreadState.leftPageNumber - 1 : 1);
+      } else {
+        // Single Page Mode
+        if (isForward) {
+          frontPageNum = spreadState.currentLogicalPage;
+          backPageNum = Math.min(spreadState.totalPages, spreadState.currentLogicalPage + 1);
+        } else {
+          frontPageNum = spreadState.currentLogicalPage;
+          backPageNum = Math.max(1, spreadState.currentLogicalPage - 1);
+        }
+      }
 
       if (frontPageNum > 0) {
         const frontTex = textureMgr.getTexture(frontPageNum);

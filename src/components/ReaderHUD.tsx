@@ -1,26 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Book, ReaderSettings } from '../types';
+import React, { useState, useEffect } from 'react';
+import { Book, ReaderSettings, PaperTexture } from '../types';
 import {
-  Library,
+  ChevronLeft,
+  ChevronRight,
   Search,
   List,
   Bookmark as BookmarkIcon,
-  Sliders,
-  Play,
-  Pause,
-  Square,
-  Volume2,
-  VolumeX,
+  Type,
+  MoreVertical,
+  BookOpen,
+  Columns,
   Maximize2,
   Minimize2,
-  Flame,
-  CloudRain,
-  Building2,
-  Coffee,
-  ChevronLeft,
-  ChevronRight,
-  SunMedium,
-  Moon,
+  Sliders,
+  Palette,
+  Sparkles,
 } from 'lucide-react';
 import { soundEngine } from '../utils/audioSynthesizer';
 
@@ -56,72 +50,11 @@ export const ReaderHUD: React.FC<ReaderHUDProps> = ({
   onToggleFullscreen,
 }) => {
   const [sliderVal, setSliderVal] = useState(book.currentPage);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showAmbientMenu, setShowAmbientMenu] = useState(false);
+  const [showTypographyPopover, setShowTypographyPopover] = useState(false);
 
   useEffect(() => {
     setSliderVal(book.currentPage);
   }, [book.currentPage]);
-
-  // Text to speech implementation
-  const handlePlayTTS = () => {
-    if (!('speechSynthesis' in window)) {
-      alert('Speech synthesis is not supported in this browser.');
-      return;
-    }
-
-    if (isPaused) {
-      window.speechSynthesis.resume();
-      setIsPaused(false);
-      setIsSpeaking(true);
-      return;
-    }
-
-    if (isSpeaking) {
-      window.speechSynthesis.pause();
-      setIsPaused(true);
-      setIsSpeaking(false);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-    const page = book.pages.find((p) => p.pageNumber === book.currentPage);
-    if (!page || page.isCover) {
-      const textToRead = `${book.title} by ${book.author}. Table of contents and chapters follow.`;
-      speakText(textToRead);
-      return;
-    }
-
-    const textToRead = page.paragraphs.join(' ');
-    speakText(textToRead);
-  };
-
-  const speakText = (text: string) => {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1.0;
-    utter.onstart = () => {
-      setIsSpeaking(true);
-      setIsPaused(false);
-    };
-    utter.onend = () => {
-      setIsSpeaking(false);
-      setIsPaused(false);
-    };
-    utter.onerror = () => {
-      setIsSpeaking(false);
-      setIsPaused(false);
-    };
-    window.speechSynthesis.speak(utter);
-  };
-
-  const handleStopTTS = () => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-    setIsSpeaking(false);
-    setIsPaused(false);
-  };
 
   const isBookmarked = book.bookmarks.some((b) => b.pageNumber === book.currentPage);
   const currentChapter = book.chapters
@@ -129,197 +62,355 @@ export const ReaderHUD: React.FC<ReaderHUDProps> = ({
     .reverse()
     .find((c) => book.currentPage >= c.pageNumber);
 
+  const progressPercent = Math.round((book.currentPage / Math.max(1, book.totalPages)) * 100);
+
   return (
     <>
-      {/* Top Floating Minimal HUD Header */}
-      <div
-        className={`fixed top-0 left-0 right-0 z-40 p-2 sm:p-4 flex items-center justify-between transition-all duration-300 pointer-events-none ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+      {/* ============================================================ */}
+      {/* 1. TOP HEADER (DESKTOP & MOBILE REFERENCE 2 & 3) */}
+      {/* ============================================================ */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB] px-3 sm:px-8 py-2.5 sm:py-3 flex items-center justify-between transition-all duration-300 shadow-xs ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'
         }`}
       >
         {/* Left: Back to Library */}
-        <div className="flex items-center gap-2 pointer-events-auto bg-[#FDFCF8]/95 dark:bg-[#1C1C1E]/95 backdrop-blur-md px-3 py-1.5 rounded-full border border-stone-300/70 dark:border-stone-700/70 shadow-lg text-xs font-sans text-stone-800 dark:text-stone-200">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
+              soundEngine.playPagePeelSound();
               onBackToLibrary();
             }}
-            className="flex items-center gap-1.5 hover:text-[#5A5A40] dark:hover:text-amber-300 transition-colors font-medium cursor-pointer"
-            title="Return to Bookshelf"
+            className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#667085] hover:text-[#171B26] px-2 sm:px-3 py-1.5 rounded-full hover:bg-[#F7F8FA] border border-transparent hover:border-[#E5E7EB] transition-colors cursor-pointer"
           >
-            <Library className="w-4 h-4" />
-            <span className="hidden sm:inline">Shelf</span>
+            <ChevronLeft className="w-4 h-4 stroke-[2.5]" />
+            <span className="hidden sm:inline">Library</span>
           </button>
         </div>
 
-        {/* Center: Title & Chapter pill */}
-        <div className="pointer-events-auto bg-[#FDFCF8]/95 dark:bg-[#1C1C1E]/95 backdrop-blur-md px-4 py-1.5 rounded-full border border-stone-300/70 dark:border-stone-700/70 shadow-lg flex items-center gap-2 text-xs font-sans max-w-[200px] sm:max-w-md truncate">
-          <span className="font-serif font-bold truncate text-stone-900 dark:text-stone-100">
+        {/* Center: Book Title & Author (Gracefully Truncated) */}
+        <div className="flex flex-col items-center text-center max-w-[180px] sm:max-w-md px-2 truncate">
+          <span className="font-serif font-bold text-xs sm:text-base text-[#171B26] truncate">
             {book.title}
           </span>
-          {currentChapter && (
-            <>
-              <span className="text-stone-400">•</span>
-              <span className="text-stone-600 dark:text-stone-400 truncate text-[11px]">
-                {currentChapter.title}
-              </span>
-            </>
-          )}
+          <span className="text-[10px] sm:text-xs text-[#667085] truncate">
+            {book.author} {currentChapter ? `• ${currentChapter.title}` : ''}
+          </span>
         </div>
 
-        {/* Right: Quick Tools */}
-        <div className="flex items-center gap-1 sm:gap-2 pointer-events-auto bg-[#FDFCF8]/95 dark:bg-[#1C1C1E]/95 backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-stone-300/70 dark:border-stone-700/70 shadow-lg text-xs font-sans text-stone-700 dark:text-stone-200">
-          {/* Quick Bookmark Toggle */}
+        {/* Right: Reading Action Icons */}
+        <div className="flex items-center gap-1 sm:gap-1.5">
+          {/* Search in Book */}
+          <button
+            onClick={onOpenSearch}
+            className="p-2 text-[#667085] hover:text-[#171B26] hover:bg-[#F7F8FA] rounded-full border border-transparent hover:border-[#E5E7EB] transition-colors cursor-pointer"
+            title="Search in Book"
+          >
+            <Search className="w-4 h-4" />
+          </button>
+
+          {/* Table of Contents */}
+          <button
+            onClick={onOpenTOC}
+            className="p-2 text-[#667085] hover:text-[#171B26] hover:bg-[#F7F8FA] rounded-full border border-transparent hover:border-[#E5E7EB] transition-colors cursor-pointer"
+            title="Table of Contents"
+          >
+            <List className="w-4 h-4" />
+          </button>
+
+          {/* Typography Settings Popover */}
+          <div className="relative">
+            <button
+              onClick={() => setShowTypographyPopover(!showTypographyPopover)}
+              className={`p-2 rounded-full border transition-colors cursor-pointer ${
+                showTypographyPopover
+                  ? 'bg-[#EEF0FF] text-[#6677E8] border-[#6677E8]/30'
+                  : 'text-[#667085] hover:text-[#171B26] hover:bg-[#F7F8FA] border-transparent hover:border-[#E5E7EB]'
+              }`}
+              title="Typography & Text Size"
+            >
+              <Type className="w-4 h-4" />
+            </button>
+
+            {/* Typography Popover */}
+            {showTypographyPopover && (
+              <div className="absolute right-0 top-full mt-2 w-64 p-4 rounded-2xl bg-white border border-[#E5E7EB] shadow-2xl z-50 space-y-3 font-sans">
+                <div className="flex justify-between items-center text-xs font-semibold text-[#171B26]">
+                  <span>Font Size</span>
+                  <span className="text-[#6677E8] font-bold">{settings.fontSize}px</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-[#667085]">A</span>
+                  <input
+                    type="range"
+                    min={14}
+                    max={24}
+                    step={1}
+                    value={settings.fontSize}
+                    onChange={(e) => onUpdateSettings({ fontSize: parseInt(e.target.value) })}
+                    className="w-full accent-[#6677E8] h-1.5 bg-[#F7F8FA] rounded-lg cursor-pointer"
+                  />
+                  <span className="text-base font-bold text-[#171B26]">A</span>
+                </div>
+
+                <div className="pt-2 border-t border-[#E5E7EB]">
+                  <span className="text-xs font-semibold text-[#667085] block mb-2">
+                    Typeface
+                  </span>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {[
+                      { id: 'garamond', label: 'Garamond', cls: 'font-serif' },
+                      { id: 'playfair', label: 'Playfair', cls: 'font-serif' },
+                      { id: 'cinzel', label: 'Cinzel', cls: 'font-serif' },
+                      { id: 'sans', label: 'Modern', cls: 'font-sans' },
+                    ].map((f) => (
+                      <button
+                        key={f.id}
+                        onClick={() => onUpdateSettings({ fontFamily: f.id as any })}
+                        className={`px-2.5 py-1 text-xs rounded-lg border text-left cursor-pointer ${f.cls} ${
+                          settings.fontFamily === f.id
+                            ? 'border-[#6677E8] bg-[#EEF0FF] text-[#6677E8] font-bold'
+                            : 'border-[#E5E7EB] text-[#667085] hover:bg-[#F7F8FA]'
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Bookmark Button */}
           <button
             onClick={() => {
               if (settings.soundEffects) soundEngine.playBookmarkSound();
               onToggleBookmark(book.currentPage);
             }}
-            className={`p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors cursor-pointer ${
-              isBookmarked ? 'text-red-600' : 'text-stone-600 dark:text-stone-300'
+            className={`p-2 rounded-full border transition-colors cursor-pointer ${
+              isBookmarked
+                ? 'text-[#E05275] bg-[#FDF2F4] border-[#E05275]/30'
+                : 'text-[#667085] hover:text-[#171B26] hover:bg-[#F7F8FA] border-transparent hover:border-[#E5E7EB]'
             }`}
             title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Page'}
           >
             <BookmarkIcon className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
           </button>
 
-          {/* Table of Contents */}
-          <button
-            onClick={onOpenTOC}
-            className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition-colors cursor-pointer"
-            title="Table of Contents"
-          >
-            <List className="w-4 h-4" />
-          </button>
-
-          {/* In-Book Search */}
-          <button
-            onClick={onOpenSearch}
-            className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition-colors cursor-pointer"
-            title="Search Book"
-          >
-            <Search className="w-4 h-4" />
-          </button>
-
-          {/* Typography & Settings */}
+          {/* More Settings */}
           <button
             onClick={onOpenSettings}
-            className="p-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition-colors cursor-pointer"
-            title="Reader Settings & Typography"
+            className="p-2 text-[#667085] hover:text-[#171B26] hover:bg-[#F7F8FA] rounded-full border border-transparent hover:border-[#E5E7EB] transition-colors cursor-pointer"
+            title="All Settings"
           >
-            <Sliders className="w-4 h-4" />
-          </button>
-
-          {/* Fullscreen Zen Reading Mode */}
-          <button
-            onClick={onToggleFullscreen}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-200 transition-colors cursor-pointer"
-            title={isFullscreen ? 'Exit Fullscreen (Esc or F)' : 'Full Screen Reading Mode (F)'}
-          >
-            {isFullscreen ? <Minimize2 className="w-4 h-4 text-amber-500" /> : <Maximize2 className="w-4 h-4" />}
-            <span className="hidden sm:inline text-[11px] font-medium">
-              {isFullscreen ? 'Exit Full' : 'Full Screen'}
-            </span>
+            <MoreVertical className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* Bottom Floating Minimal Scrubber HUD */}
+      {/* ============================================================ */}
+      {/* 2. MOBILE TOP SUB-BAR TOOLBAR (REFERENCE IMAGE 3) */}
+      {/* ============================================================ */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-40 p-3 sm:p-4 flex flex-col items-center justify-center transition-all duration-300 pointer-events-none ${
-          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        className={`sm:hidden fixed top-14 left-0 right-0 z-30 px-4 py-2 flex items-center justify-between pointer-events-none transition-all duration-300 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
         }`}
       >
-        <div className="w-full max-w-xl bg-[#FDFCF8]/95 dark:bg-[#1C1C1E]/95 backdrop-blur-md px-4 sm:px-6 py-2.5 rounded-2xl border border-stone-300/70 dark:border-stone-700/70 shadow-2xl pointer-events-auto flex flex-col gap-2 font-sans">
-          {/* Top Scrubber Row */}
-          <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-300">
-            <span className="font-semibold text-[11px] text-stone-800 dark:text-stone-100">
+        {/* Theme Button */}
+        <button
+          onClick={() => {
+            const nextTheme = settings.paperTexture === 'dark' ? 'cream' : 'dark';
+            onUpdateSettings({ paperTexture: nextTheme });
+          }}
+          className="pointer-events-auto px-3 py-1 rounded-full bg-white/95 shadow-md border border-[#E5E7EB] flex items-center gap-1.5 text-xs font-semibold text-[#171B26]"
+        >
+          <Palette className="w-3.5 h-3.5 text-[#6677E8]" />
+          <span>{settings.paperTexture === 'dark' ? 'Light' : 'Theme'}</span>
+        </button>
+
+        {/* Page View / Layout Selector */}
+        <button
+          onClick={() => {
+            const nextMode = settings.readingMode === 'single' ? 'spread' : 'single';
+            onUpdateSettings({ readingMode: nextMode });
+            soundEngine.playPagePeelSound();
+          }}
+          className="pointer-events-auto px-3 py-1 rounded-full bg-white/95 shadow-md border border-[#E5E7EB] flex items-center gap-1.5 text-xs font-semibold text-[#171B26]"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-[#6677E8]" />
+          <span>{settings.readingMode === 'single' ? '1 Page' : '2 Pages'}</span>
+        </button>
+
+        {/* Contents Button */}
+        <button
+          onClick={onOpenTOC}
+          className="pointer-events-auto px-3 py-1 rounded-full bg-white/95 shadow-md border border-[#E5E7EB] flex items-center gap-1.5 text-xs font-semibold text-[#171B26]"
+          title="Contents"
+        >
+          <List className="w-3.5 h-3.5 text-[#6677E8]" />
+          <span>TOC</span>
+        </button>
+      </div>
+
+      {/* ============================================================ */}
+      {/* 3. FLOATING PAGE NAVIGATION CONTROLS (CIRCULAR CLEAN ARROWS) */}
+      {/* ============================================================ */}
+      <div className="hidden sm:flex fixed top-1/2 -translate-y-1/2 left-4 lg:left-6 z-30">
+        <button
+          onClick={() => onPageChange(Math.max(1, book.currentPage - (settings.readingMode === 'spread' ? 2 : 1)))}
+          disabled={book.currentPage <= 1}
+          className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-[#E5E7EB] flex items-center justify-center text-[#667085] hover:text-[#6677E8] hover:border-[#6677E8]/40 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100 transition-all cursor-pointer"
+          title="Previous Page"
+        >
+          <ChevronLeft className="w-5 h-5 stroke-[2.2]" />
+        </button>
+      </div>
+
+      <div className="hidden sm:flex fixed top-1/2 -translate-y-1/2 right-4 lg:right-6 z-30">
+        <button
+          onClick={() => onPageChange(Math.min(book.totalPages, book.currentPage + (settings.readingMode === 'spread' ? 2 : 1)))}
+          disabled={book.currentPage >= book.totalPages}
+          className="w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-[#E5E7EB] flex items-center justify-center text-[#667085] hover:text-[#6677E8] hover:border-[#6677E8]/40 hover:scale-105 disabled:opacity-30 disabled:hover:scale-100 transition-all cursor-pointer"
+          title="Next Page"
+        >
+          <ChevronRight className="w-5 h-5 stroke-[2.2]" />
+        </button>
+      </div>
+
+      {/* ============================================================ */}
+      {/* 4. BOTTOM READING CONTROLS (DESKTOP & MOBILE REFERENCE 2 & 3) */}
+      {/* ============================================================ */}
+      <footer
+        className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E5E7EB] p-3 sm:px-8 sm:py-3 transition-all duration-300 shadow-md ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'
+        }`}
+      >
+        <div className="max-w-5xl mx-auto flex flex-col gap-2.5 font-sans">
+          {/* Top Row: Title Preview, Page count, Slider Scrubber, Percentage & Controls */}
+          <div className="flex items-center justify-between gap-4 text-xs font-semibold text-[#667085]">
+            {/* Desktop Left: Title Preview */}
+            <div className="hidden md:flex items-center gap-3 min-w-[180px]">
+              <div className="w-6 h-8 rounded bg-[#1C2030] text-white flex items-center justify-center text-[8px] font-serif shadow-xs">
+                {book.title[0]}
+              </div>
+              <div className="truncate">
+                <p className="font-semibold text-xs text-[#171B26] truncate">{book.title}</p>
+                <p className="text-[10px] text-[#667085] truncate">{book.author}</p>
+              </div>
+            </div>
+
+            {/* Page Count */}
+            <span className="text-xs font-bold text-[#171B26] whitespace-nowrap">
               Page {book.currentPage} of {book.totalPages}
             </span>
 
-            {/* Quick Play Audio & Ambient */}
-            <div className="flex items-center gap-2">
-              {/* TTS Read Aloud */}
-              <button
-                onClick={handlePlayTTS}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-200/80 dark:bg-stone-800 hover:bg-stone-300 text-[10px] font-bold uppercase tracking-wider text-stone-800 dark:text-stone-200 transition-all cursor-pointer"
-                title="Read Page Aloud"
-              >
-                {isSpeaking ? <Pause className="w-3 h-3 text-amber-500" /> : <Play className="w-3 h-3" />}
-                <span>{isSpeaking ? 'Pause' : 'Read'}</span>
-              </button>
+            {/* Slider Scrubber */}
+            <div className="flex-1 flex items-center gap-2">
+              <input
+                type="range"
+                min="1"
+                max={book.totalPages}
+                value={sliderVal}
+                onChange={(e) => setSliderVal(Number(e.target.value))}
+                onMouseUp={() => onPageChange(sliderVal)}
+                onTouchEnd={() => onPageChange(sliderVal)}
+                className="w-full accent-[#6677E8] h-1.5 bg-[#F7F8FA] rounded-lg cursor-pointer border border-[#E5E7EB]"
+              />
+            </div>
 
-              {isSpeaking && (
-                <button
-                  onClick={handleStopTTS}
-                  className="p-1 rounded-full text-stone-500 hover:text-red-500 cursor-pointer"
-                  title="Stop Reading"
-                >
-                  <Square className="w-3 h-3 fill-current" />
-                </button>
-              )}
+            {/* Percentage */}
+            <span className="text-xs font-bold text-[#6677E8] whitespace-nowrap">
+              {progressPercent}%
+            </span>
 
-              {/* Ambient Sound Icon */}
+            {/* Desktop Right Actions */}
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={() => {
-                  const nextSound: ReaderSettings['ambientSound'] =
-                    settings.ambientSound === 'none'
-                      ? 'library'
-                      : settings.ambientSound === 'library'
-                      ? 'rain'
-                      : settings.ambientSound === 'rain'
-                      ? 'fireplace'
-                      : 'none';
-                  onUpdateSettings({ ambientSound: nextSound });
-                  soundEngine.setAmbientSound(nextSound, settings.ambientVolume);
+                  const nextMode = settings.readingMode === 'single' ? 'spread' : 'single';
+                  onUpdateSettings({ readingMode: nextMode });
+                  soundEngine.playPagePeelSound();
                 }}
-                className="flex items-center gap-1 px-2 py-1 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-[10px] text-stone-600 dark:text-stone-300 transition-all cursor-pointer"
-                title={`Ambient Sound: ${settings.ambientSound}`}
+                className="px-3 py-1.5 rounded-full border border-[#E5E7EB] hover:border-[#6677E8]/40 text-xs font-semibold text-[#171B26] hover:bg-[#F7F8FA] transition-colors flex items-center gap-1.5 cursor-pointer"
+                title="Toggle View Mode"
               >
-                {settings.ambientSound === 'fireplace' ? (
-                  <Flame className="w-3.5 h-3.5 text-orange-500" />
-                ) : settings.ambientSound === 'rain' ? (
-                  <CloudRain className="w-3.5 h-3.5 text-blue-400" />
-                ) : settings.ambientSound === 'library' ? (
-                  <Building2 className="w-3.5 h-3.5 text-amber-500" />
+                {settings.readingMode === 'single' ? (
+                  <>
+                    <BookOpen className="w-3.5 h-3.5 text-[#6677E8]" />
+                    <span>Single Page</span>
+                  </>
                 ) : (
-                  <VolumeX className="w-3.5 h-3.5 text-stone-400" />
+                  <>
+                    <Columns className="w-3.5 h-3.5 text-[#6677E8]" />
+                    <span>Spread View</span>
+                  </>
                 )}
-                <span className="capitalize hidden sm:inline">{settings.ambientSound}</span>
               </button>
+
+              {onToggleFullscreen && (
+                <button
+                  onClick={onToggleFullscreen}
+                  className="p-2 rounded-full border border-[#E5E7EB] hover:border-[#6677E8]/40 hover:bg-[#F7F8FA] text-[#667085] hover:text-[#171B26] transition-colors cursor-pointer"
+                  title="Toggle Fullscreen"
+                >
+                  {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#6677E8]" /> : <Maximize2 className="w-4 h-4" />}
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Page Scrubber Slider */}
-          <div className="flex items-center gap-3">
+          {/* Mobile Bottom Bar (Reference Image 3: Contents, Progress, Theme, Layout, More) */}
+          <div className="sm:hidden flex items-center justify-around pt-2 border-t border-[#E5E7EB] text-[#667085]">
             <button
-              onClick={() => onPageChange(Math.max(1, book.currentPage - 1))}
-              disabled={book.currentPage <= 1}
-              className="p-1 text-stone-600 dark:text-stone-300 hover:text-stone-900 disabled:opacity-30 cursor-pointer"
+              onClick={onOpenTOC}
+              className="flex flex-col items-center gap-1 text-[10px] hover:text-[#6677E8] transition-colors"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <List className="w-4 h-4" />
+              <span>Contents</span>
             </button>
 
-            <input
-              type="range"
-              min="1"
-              max={book.totalPages}
-              value={sliderVal}
-              onChange={(e) => setSliderVal(Number(e.target.value))}
-              onMouseUp={() => onPageChange(sliderVal)}
-              onTouchEnd={() => onPageChange(sliderVal)}
-              className="flex-1 accent-[#5A5A40] dark:accent-amber-400 cursor-pointer h-1.5 bg-stone-200 dark:bg-stone-800 rounded-lg"
-            />
+            <button
+              onClick={onOpenBookmarks}
+              className="flex flex-col items-center gap-1 text-[10px] hover:text-[#6677E8] transition-colors"
+            >
+              <BookmarkIcon className="w-4 h-4" />
+              <span>Bookmarks</span>
+            </button>
 
             <button
-              onClick={() => onPageChange(Math.min(book.totalPages, book.currentPage + 1))}
-              disabled={book.currentPage >= book.totalPages}
-              className="p-1 text-stone-600 dark:text-stone-300 hover:text-stone-900 disabled:opacity-30 cursor-pointer"
+              onClick={() => {
+                const nextTheme = settings.paperTexture === 'dark' ? 'cream' : 'dark';
+                onUpdateSettings({ paperTexture: nextTheme });
+              }}
+              className="flex flex-col items-center gap-1 text-[10px] hover:text-[#6677E8] transition-colors"
             >
-              <ChevronRight className="w-4 h-4" />
+              <Palette className="w-4 h-4" />
+              <span>Theme</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const nextMode = settings.readingMode === 'single' ? 'spread' : 'single';
+                onUpdateSettings({ readingMode: nextMode });
+                soundEngine.playPagePeelSound();
+              }}
+              className="flex flex-col items-center gap-1 text-[10px] hover:text-[#6677E8] transition-colors"
+            >
+              <Columns className="w-4 h-4" />
+              <span>Layout</span>
+            </button>
+
+            <button
+              onClick={onOpenSettings}
+              className="flex flex-col items-center gap-1 text-[10px] hover:text-[#6677E8] transition-colors"
+            >
+              <Sliders className="w-4 h-4" />
+              <span>Settings</span>
             </button>
           </div>
         </div>
-      </div>
+      </footer>
     </>
   );
 };

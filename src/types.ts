@@ -39,13 +39,33 @@ export interface Highlight {
   createdAt: number;
 }
 
+export type CoverTheme =
+  | 'classic-leather'
+  | 'navy-gold'
+  | 'emerald-vintage'
+  | 'burgundy-royal'
+  | 'slate-minimal'
+  | 'amber-antique'
+  | 'parchment-gold';
+
+export type BookCategory =
+  | 'classics'
+  | 'fiction'
+  | 'philosophy'
+  | 'custom'
+  | 'self-help'
+  | 'history'
+  | 'business'
+  | 'science'
+  | 'lifestyle';
+
 export interface Book {
   id: string;
   title: string;
   author: string;
   createdAt: number;
   updatedAt: number;
-  coverTheme: 'classic-leather' | 'navy-gold' | 'emerald-vintage' | 'burgundy-royal' | 'slate-minimal' | 'amber-antique';
+  coverTheme: CoverTheme;
   coverSubtitle?: string;
   originalFileName?: string;
   fileType: 'pdf' | 'docx' | 'txt' | 'md' | 'sample' | 'pasted';
@@ -58,14 +78,15 @@ export interface Book {
   totalWords: number;
   totalPages: number;
   isFavorite?: boolean;
-  category?: 'classics' | 'fiction' | 'philosophy' | 'custom';
+  category?: BookCategory;
 }
 
 export type PaperTexture = 'cream' | 'parchment' | 'washi' | 'linen' | 'dark' | 'slate' | 'sepia' | 'emerald';
 export type BookTheme = 'classic' | 'modern' | 'night' | 'vintage';
-export type FontFamily = 'merriweather' | 'eb-garamond' | 'playfair' | 'cinzel' | 'sans' | 'mono';
+export type FontFamily = 'merriweather' | 'eb-garamond' | 'garamond' | 'playfair' | 'cinzel' | 'sans' | 'mono';
 export type ReadingMode = 'auto' | 'spread' | 'single';
-export type Atmosphere = 'candlelight' | 'daylight' | 'desklamp' | 'rainy' | 'studio';
+export type Atmosphere = 'candlelight' | 'daylight' | 'desklamp' | 'rainy' | 'studio' | 'night' | 'rainstorm';
+export type AtmosphereTheme = Atmosphere;
 export type DeskSurface = 'dark-oak' | 'walnut' | 'light-pine' | 'slate' | 'leather';
 
 export interface ReaderSettings {

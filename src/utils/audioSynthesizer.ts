@@ -58,6 +58,15 @@ class SoundEngine {
     } catch {}
   }
 
+  public setMuted(muted: boolean) {
+    this.isMuted = muted;
+  }
+
+  // Alias for page flip sound
+  public playPageFlipSound() {
+    this.playPageTurnSound(1.0);
+  }
+
   // Realistic organic paper turn swoosh & leaf flutter
   public playPageTurnSound(intensity: number = 1) {
     if (this.isMuted) return;

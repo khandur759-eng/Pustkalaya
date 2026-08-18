@@ -47,10 +47,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   ];
 
   const atmospheres: { id: Atmosphere; label: string; icon: React.ReactNode }[] = [
-    { id: 'studio', label: 'Studio Light', icon: <Sparkles className="w-4 h-4 text-amber-500" /> },
+    { id: 'studio', label: 'Studio Light', icon: <Sun className="w-4 h-4 text-[#6677E8]" /> },
     { id: 'candlelight', label: 'Candlelight', icon: <Flame className="w-4 h-4 text-orange-500" /> },
-    { id: 'daylight', label: 'Daylight Study', icon: <Sun className="w-4 h-4 text-yellow-500" /> },
-    { id: 'desklamp', label: 'Desk Lamp', icon: <Lamp className="w-4 h-4 text-amber-400" /> },
+    { id: 'daylight', label: 'Daylight Study', icon: <Sun className="w-4 h-4 text-amber-500" /> },
+    { id: 'desklamp', label: 'Desk Lamp', icon: <Lamp className="w-4 h-4 text-amber-500" /> },
     { id: 'rainy', label: 'Rainy Window', icon: <CloudLightning className="w-4 h-4 text-sky-400" /> },
   ];
 
@@ -71,7 +71,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     { id: 'none', label: 'Mute', icon: <VolumeX className="w-4 h-4" /> },
     { id: 'fireplace', label: 'Hearth Fire', icon: <Flame className="w-4 h-4 text-orange-400" /> },
     { id: 'rain', label: 'Gentle Rain', icon: <CloudRain className="w-4 h-4 text-blue-400" /> },
-    { id: 'library', label: 'Quiet Library', icon: <Building2 className="w-4 h-4 text-amber-400" /> },
+    { id: 'library', label: 'Quiet Library', icon: <Building2 className="w-4 h-4 text-[#6677E8]" /> },
     { id: 'cafe', label: 'Coffee Shop', icon: <Coffee className="w-4 h-4 text-emerald-400" /> },
   ];
 
@@ -89,305 +89,238 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-xl bg-[#FDFCF8] border border-[#DCD7C9] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden flex flex-col max-h-[88vh]"
+        className="relative w-full max-w-xl bg-white border border-[#E6E9EF] rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.12)] overflow-hidden flex flex-col max-h-[88vh]"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#DCD7C9] bg-[#F4F1EA]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E6E9EF] bg-[#F8FAFC]">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#5A5A40]/10 border border-[#5A5A40]/30 flex items-center justify-center text-[#5A5A40]">
+            <div className="w-9 h-9 rounded-xl bg-[#EEF0FF] text-[#6677E8] flex items-center justify-center">
               <Sliders className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-serif font-bold text-[#1A1A1A]">Reading Experience & Styling</h2>
-              <p className="text-xs text-[#8C8471] font-sans">Customize 3D display, paper, typography, and sound</p>
+              <h2 className="text-base font-serif font-bold text-[#151923]">Reading Experience & Styling</h2>
+              <p className="text-xs text-[#667085] font-sans">
+                Customize paper textures, lighting, sounds, and typography
+              </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#8C8471] hover:text-[#1A1A1A] hover:bg-[#E8E4D8] transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[#98A2B3] hover:text-[#151923] hover:bg-white border border-transparent hover:border-[#E6E9EF] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#FDFCF8] font-sans">
-          {/* Reading Mode */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-2">
-              Book Reading Layout
-            </label>
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-white font-sans">
+          {/* Section 1: Page Layout & View Mode */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+              Layout & Book Format
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               <button
-                onClick={() => onUpdateSettings({ readingMode: 'spread' })}
-                className={`p-3.5 rounded-xl border flex items-center gap-3 transition-all ${
-                  settings.readingMode === 'spread'
-                    ? 'bg-[#5A5A40]/10 border-[#5A5A40] text-[#1A1A1A]'
-                    : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#5A5A40] hover:bg-[#F4F1EA]'
+                onClick={() => {
+                  onUpdateSettings({ readingMode: 'single' });
+                  soundEngine.playPagePeelSound();
+                }}
+                className={`p-3 rounded-xl border text-left flex items-center gap-3 cursor-pointer ${
+                  settings.readingMode === 'single'
+                    ? 'border-[#6677E8] bg-[#EEF0FF] text-[#151923] ring-1 ring-[#6677E8]'
+                    : 'border-[#E6E9EF] hover:border-[#D5D9E2] text-[#20242D]'
                 }`}
               >
-                <BookOpen className="w-5 h-5 text-[#5A5A40]" />
-                <div className="text-left">
-                  <div className="text-xs font-semibold">3D Double Page Spread</div>
-                  <div className="text-[10px] opacity-70 text-[#8C8471]">Realistic open book with turning leaves</div>
+                <div className="w-6 h-8 rounded border-2 border-current flex items-center justify-center text-xs font-bold">
+                  1
+                </div>
+                <div>
+                  <div className="font-semibold text-xs text-[#151923]">Single Page</div>
+                  <div className="text-[10px] text-[#667085]">Vertical focus</div>
                 </div>
               </button>
 
               <button
-                onClick={() => onUpdateSettings({ readingMode: 'single' })}
-                className={`p-3.5 rounded-xl border flex items-center gap-3 transition-all ${
-                  settings.readingMode === 'single'
-                    ? 'bg-[#5A5A40]/10 border-[#5A5A40] text-[#1A1A1A]'
-                    : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#5A5A40] hover:bg-[#F4F1EA]'
+                onClick={() => {
+                  onUpdateSettings({ readingMode: 'spread' });
+                  soundEngine.playPagePeelSound();
+                }}
+                className={`p-3 rounded-xl border text-left flex items-center gap-3 cursor-pointer ${
+                  settings.readingMode === 'spread'
+                    ? 'border-[#6677E8] bg-[#EEF0FF] text-[#151923] ring-1 ring-[#6677E8]'
+                    : 'border-[#E6E9EF] hover:border-[#D5D9E2] text-[#20242D]'
                 }`}
               >
-                <Type className="w-5 h-5 text-[#5A5A40]" />
-                <div className="text-left">
-                  <div className="text-xs font-semibold">Single Sliding Page</div>
-                  <div className="text-[10px] opacity-70 text-[#8C8471]">Compact tablet & mobile sliding view</div>
+                <div className="w-8 h-8 rounded border-2 border-current flex items-center justify-center text-xs font-bold">
+                  2
+                </div>
+                <div>
+                  <div className="font-semibold text-xs text-[#151923]">Two-Page Spread</div>
+                  <div className="text-[10px] text-[#667085]">Open physical book</div>
                 </div>
               </button>
             </div>
           </div>
 
-          {/* Paper Theme */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-2">
-              Paper Texture & Stock
-            </label>
+          {/* Section 2: Paper Stock & Background Tone */}
+          <div className="space-y-3 pt-2 border-t border-[#E6E9EF]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+              Paper Stock & Color Tone
+            </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {paperTextures.map((p) => (
+              {paperTextures.map((texture) => (
                 <button
-                  key={p.id}
-                  onClick={() => onUpdateSettings({ paperTexture: p.id })}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all ${
-                    settings.paperTexture === p.id
-                      ? 'border-[#5A5A40] ring-2 ring-[#5A5A40]/30'
-                      : 'border-[#DCD7C9] hover:border-[#8C8471]'
+                  key={texture.id}
+                  onClick={() => {
+                    onUpdateSettings({ paperTexture: texture.id });
+                    soundEngine.playPagePeelSound();
+                  }}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    settings.paperTexture === texture.id
+                      ? 'border-[#6677E8] ring-2 ring-[#6677E8]/20 shadow-xs'
+                      : 'border-[#E6E9EF] hover:border-[#D5D9E2]'
                   }`}
-                  style={{ backgroundColor: p.bg, color: p.text }}
+                  style={{ backgroundColor: texture.bg, color: texture.text }}
                 >
-                  <span className="text-xs font-serif font-bold">{p.label}</span>
-                  <span className="text-[10px] opacity-60">Abc 123</span>
+                  <div className="text-xs font-semibold">{texture.label}</div>
+                  <div className="text-[10px] opacity-70 mt-0.5">Sample page</div>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Atmospheric Room Lighting */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-2">
-              Atmospheric Room Lighting
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {/* Section 3: Reading Atmosphere & Lighting */}
+          <div className="space-y-3 pt-2 border-t border-[#E6E9EF]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+              Lighting & Room Atmosphere
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
               {atmospheres.map((atm) => (
                 <button
                   key={atm.id}
                   onClick={() => onUpdateSettings({ atmosphere: atm.id })}
-                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-1 text-center transition-all ${
-                    (settings.atmosphere || 'studio') === atm.id
-                      ? 'bg-[#5A5A40]/15 border-[#5A5A40] text-[#1A1A1A] ring-1 ring-[#5A5A40]'
-                      : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#8C8471] hover:bg-[#F4F1EA]'
+                  className={`p-2.5 rounded-xl border flex items-center gap-2.5 text-left transition-all cursor-pointer ${
+                    settings.atmosphere === atm.id
+                      ? 'border-[#6677E8] bg-[#EEF0FF] text-[#151923] ring-1 ring-[#6677E8]'
+                      : 'border-[#E6E9EF] hover:border-[#D5D9E2] text-[#20242D]'
                   }`}
                 >
                   {atm.icon}
-                  <span className="text-[11px] font-medium mt-1">{atm.label}</span>
+                  <span className="text-xs font-semibold">{atm.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Typography Font */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-2">
-              Font Family
-            </label>
-            <div className="grid grid-cols-2 gap-2">
+          {/* Section 4: Typography, Font Size, Line Spacing */}
+          <div className="space-y-3 pt-2 border-t border-[#E6E9EF]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+              Typography & Spacing
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {fonts.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => onUpdateSettings({ fontFamily: f.id })}
-                  className={`p-2.5 rounded-xl border text-left transition-all ${
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                     settings.fontFamily === f.id
-                      ? 'bg-[#5A5A40]/10 border-[#5A5A40] text-[#1A1A1A]'
-                      : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#2C2C2C] hover:bg-[#F4F1EA]'
+                      ? 'border-[#6677E8] bg-[#EEF0FF] text-[#151923] ring-1 ring-[#6677E8]'
+                      : 'border-[#E6E9EF] hover:border-[#D5D9E2] text-[#20242D]'
                   }`}
                 >
-                  <div className="text-xs font-semibold">{f.label}</div>
-                  <div className="text-[11px] opacity-60 truncate mt-0.5">{f.sample}</div>
+                  <div className="text-xs font-semibold truncate">{f.label}</div>
+                  <div className="text-[10px] text-[#667085] truncate">{f.sample}</div>
                 </button>
               ))}
             </div>
-          </div>
 
-          {/* Sizing & Spacing */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <div className="flex items-center justify-between text-xs text-[#8C8471] mb-1.5">
-                <span className="font-semibold uppercase tracking-wider">Font Size</span>
-                <span className="font-sans font-bold text-[#5A5A40]">{settings.fontSize}px</span>
-              </div>
-              <input
-                type="range"
-                min="13"
-                max="24"
-                value={settings.fontSize}
-                onChange={(e) => onUpdateSettings({ fontSize: Number(e.target.value) })}
-                className="w-full accent-[#5A5A40]"
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center justify-between text-xs text-[#8C8471] mb-1.5">
-                <span className="font-semibold uppercase tracking-wider">Line Spacing</span>
-                <span className="font-sans font-bold text-[#5A5A40]">{settings.lineHeight}x</span>
-              </div>
-              <input
-                type="range"
-                min="1.3"
-                max="2.2"
-                step="0.1"
-                value={settings.lineHeight}
-                onChange={(e) => onUpdateSettings({ lineHeight: Number(e.target.value) })}
-                className="w-full accent-[#5A5A40]"
-              />
-            </div>
-          </div>
-
-          {/* Alignment & Drop Caps */}
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-1.5">
-                Text Alignment
-              </label>
-              <div className="flex rounded-xl bg-[#F4F1EA] p-1 border border-[#DCD7C9]">
-                <button
-                  onClick={() => onUpdateSettings({ textAlign: 'justify' })}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                    settings.textAlign === 'justify' ? 'bg-[#5A5A40] text-[#F4F1EA]' : 'text-[#8C8471]'
-                  }`}
-                >
-                  <AlignJustify className="w-3.5 h-3.5" />
-                  Justified
-                </button>
-                <button
-                  onClick={() => onUpdateSettings({ textAlign: 'left' })}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
-                    settings.textAlign === 'left' ? 'bg-[#5A5A40] text-[#F4F1EA]' : 'text-[#8C8471]'
-                  }`}
-                >
-                  <AlignLeft className="w-3.5 h-3.5" />
-                  Left Aligned
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-1.5">
-                Drop Caps
-              </label>
-              <button
-                onClick={() => onUpdateSettings({ dropCaps: !settings.dropCaps })}
-                className={`w-full py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all ${
-                  settings.dropCaps
-                    ? 'bg-[#5A5A40]/10 border-[#5A5A40] text-[#1A1A1A]'
-                    : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#8C8471]'
-                }`}
-              >
-                <span>Illuminated Initial Letter</span>
-                <span className="text-[10px] uppercase font-bold text-[#5A5A40]">
-                  {settings.dropCaps ? 'Enabled' : 'Disabled'}
-                </span>
-              </button>
-            </div>
-          </div>
-
-          {/* Soundscapes & Tactile Effects */}
-          <div className="pt-3 border-t border-[#DCD7C9] space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#8C8471] flex items-center gap-2">
-                <Volume2 className="w-3.5 h-3.5 text-[#5A5A40]" />
-                Paper Rustle Sound Effects
-              </label>
-              <button
-                onClick={() => onUpdateSettings({ soundEffects: !settings.soundEffects })}
-                className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                  settings.soundEffects
-                    ? 'bg-[#5A5A40] text-[#F4F1EA]'
-                    : 'bg-[#E8E4D8] text-[#8C8471]'
-                }`}
-              >
-                {settings.soundEffects ? 'ON' : 'OFF'}
-              </button>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[#8C8471] mb-2">
-                Ambient Reading Soundscape
-              </label>
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                {ambientSounds.map((snd) => (
-                  <button
-                    key={snd.id}
-                    onClick={() => handleAmbientChange(snd.id)}
-                    className={`p-2 rounded-xl border flex flex-col items-center gap-1 text-center transition-all ${
-                      settings.ambientSound === snd.id
-                        ? 'bg-[#5A5A40]/15 border-[#5A5A40] text-[#1A1A1A]'
-                        : 'bg-[#F4F1EA]/60 border-[#DCD7C9] text-[#8C8471] hover:bg-[#F4F1EA]'
-                    }`}
-                  >
-                    {snd.icon}
-                    <span className="text-[10px] font-medium">{snd.label}</span>
-                  </button>
-                ))}
-              </div>
-
-              {settings.ambientSound !== 'none' && (
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="text-[11px] text-[#8C8471] shrink-0 font-medium">Volume</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.05"
-                    value={settings.ambientVolume}
-                    onChange={(e) => handleVolumeChange(Number(e.target.value))}
-                    className="w-full accent-[#5A5A40]"
-                  />
+            {/* Font Size and Line Height sliders */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div>
+                <div className="flex justify-between text-xs text-[#667085] mb-1">
+                  <span>Font Size</span>
+                  <span className="font-bold text-[#151923]">{settings.fontSize}px</span>
                 </div>
-              )}
+                <input
+                  type="range"
+                  min="13"
+                  max="24"
+                  value={settings.fontSize}
+                  onChange={(e) => onUpdateSettings({ fontSize: Number(e.target.value) })}
+                  className="w-full accent-[#6677E8] h-1.5 bg-[#F3F5F8] rounded-lg cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-[#667085] mb-1">
+                  <span>Line Spacing</span>
+                  <span className="font-bold text-[#151923]">{settings.lineHeight.toFixed(1)}x</span>
+                </div>
+                <input
+                  type="range"
+                  min="1.3"
+                  max="2.2"
+                  step="0.1"
+                  value={settings.lineHeight}
+                  onChange={(e) => onUpdateSettings({ lineHeight: Number(e.target.value) })}
+                  className="w-full accent-[#6677E8] h-1.5 bg-[#F3F5F8] rounded-lg cursor-pointer"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Auto Flip Slideshow */}
-          <div className="pt-3 border-t border-[#DCD7C9] flex items-center justify-between">
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]">
-                Hands-Free Auto Flip
-              </div>
-              <div className="text-[11px] text-[#8C8471]">Automatically advances pages at regular timer intervals</div>
-            </div>
-            <div className="flex items-center gap-2">
-              {settings.autoFlip && (
-                <select
-                  value={settings.autoFlipInterval}
-                  onChange={(e) => onUpdateSettings({ autoFlipInterval: Number(e.target.value) })}
-                  className="px-2 py-1 bg-[#FDFCF8] border border-[#DCD7C9] rounded-lg text-xs text-[#2C2C2C]"
+          {/* Section 5: Ambient Soundscapes */}
+          <div className="space-y-3 pt-2 border-t border-[#E6E9EF]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#667085]">
+              Ambient Audio Background
+            </h3>
+
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {ambientSounds.map((snd) => (
+                <button
+                  key={snd.id}
+                  onClick={() => handleAmbientChange(snd.id)}
+                  className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 text-center transition-all cursor-pointer ${
+                    settings.ambientSound === snd.id
+                      ? 'border-[#6677E8] bg-[#EEF0FF] text-[#151923] ring-1 ring-[#6677E8]'
+                      : 'border-[#E6E9EF] hover:border-[#D5D9E2] text-[#20242D]'
+                  }`}
                 >
-                  <option value={5}>5s</option>
-                  <option value={8}>8s</option>
-                  <option value={12}>12s</option>
-                  <option value={20}>20s</option>
-                </select>
-              )}
-              <button
-                onClick={() => onUpdateSettings({ autoFlip: !settings.autoFlip })}
-                className={`px-3.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                  settings.autoFlip ? 'bg-[#5A5A40] text-[#F4F1EA]' : 'bg-[#E8E4D8] text-[#8C8471]'
-                }`}
-              >
-                {settings.autoFlip ? 'Active' : 'Off'}
-              </button>
+                  {snd.icon}
+                  <span className="text-[11px] font-semibold">{snd.label}</span>
+                </button>
+              ))}
             </div>
+
+            {settings.ambientSound !== 'none' && (
+              <div className="pt-2">
+                <div className="flex justify-between text-xs text-[#667085] mb-1">
+                  <span>Ambient Volume</span>
+                  <span className="font-bold text-[#151923]">
+                    {Math.round(settings.ambientVolume * 100)}%
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={settings.ambientVolume}
+                  onChange={(e) => handleVolumeChange(Number(e.target.value))}
+                  className="w-full accent-[#6677E8] h-1.5 bg-[#F3F5F8] rounded-lg cursor-pointer"
+                />
+              </div>
+            )}
           </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="flex items-center justify-end px-6 py-4 border-t border-[#E6E9EF] bg-[#F8FAFC]">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 bg-[#6677E8] hover:bg-[#5263DB] text-white text-xs font-semibold rounded-full shadow-xs cursor-pointer"
+          >
+            Apply & Done
+          </button>
         </div>
       </div>
     </div>

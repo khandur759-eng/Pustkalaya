@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Book, ReaderSettings, Bookmark } from './types';
+import { Book, ReaderSettings, Bookmark, AtmosphereTheme, DeskSurface } from './types';
 import { SAMPLE_BOOKS } from './utils/sampleBooks';
 import { BookViewer } from './components/BookViewer';
 import { PhysicalBookshelf } from './components/PhysicalBookshelf';
 import { ReaderHUD } from './components/ReaderHUD';
+import { PreReadingModal } from './components/PreReadingModal';
 import { UploadModal } from './components/UploadModal';
 import { TableOfContentsModal } from './components/TableOfContentsModal';
 import { BookmarksModal } from './components/BookmarksModal';
@@ -15,7 +16,7 @@ import { soundEngine } from './utils/audioSynthesizer';
 const DEFAULT_SETTINGS: ReaderSettings = {
   theme: 'classic',
   paperTexture: 'cream',
-  fontFamily: 'eb-garamond',
+  fontFamily: 'garamond',
   fontSize: 16,
   lineHeight: 1.65,
   marginSize: 'normal',
@@ -40,8 +41,8 @@ const STORAGE_KEY_SETTINGS = 'docubook_settings_v2';
 const STORAGE_KEY_ACTIVE = 'docubook_active_book_v2';
 
 export default function App() {
-  // Navigation view mode: 'reader' or 'library'
-  const [viewMode, setViewMode] = useState<'reader' | 'library'>('reader');
+  // Navigation view mode: defaults to 'library' (Bookshelf / Home) as requested!
+  const [viewMode, setViewMode] = useState<'reader' | 'library'>('library');
   const [isHUDVisible, setIsHUDVisible] = useState(true);
   const [isFullscreenReading, setIsFullscreenReading] = useState(false);
 
@@ -72,6 +73,9 @@ export default function App() {
     } catch {}
     return DEFAULT_SETTINGS;
   });
+
+  // Pre-reading modal state
+  const [preReadingBook, setPreReadingBook] = useState<Book | null>(null);
 
   // Modal Dialog states
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -138,7 +142,7 @@ export default function App() {
   const handleBookCreated = (newBook: Book) => {
     setBooks((prev) => [newBook, ...prev]);
     setActiveBookId(newBook.id);
-    setViewMode('reader');
+    setPreReadingBook(newBook);
     setIsUploadOpen(false);
   };
 
@@ -165,10 +169,8 @@ export default function App() {
 
     let updatedBookmarks: Bookmark[];
     if (existingIndex >= 0) {
-      // Remove
       updatedBookmarks = activeBook.bookmarks.filter((b) => b.pageNumber !== pageNumber);
     } else {
-      // Add
       const page = activeBook.pages.find((p) => p.pageNumber === pageNumber);
       const snippet = page?.paragraphs[0]?.slice(0, 100) || `Bookmark on page ${pageNumber}`;
 
@@ -254,9 +256,24 @@ export default function App() {
     handlePageChange(pageNum);
   };
 
-  const handleOpenBookFromShelf = (bookId: string) => {
+  // Selecting a book on the shelf opens the Pre-Reading Settings Dialog
+  const handleSelectBookForReading = (book: Book) => {
+    setActiveBookId(book.id);
+    setPreReadingBook(book);
+  };
+
+  // Quick Resume directly enters the reader
+  const handleQuickResume = (bookId: string) => {
     setActiveBookId(bookId);
     setViewMode('reader');
+  };
+
+  const handleConfirmPreReading = () => {
+    if (preReadingBook) {
+      setActiveBookId(preReadingBook.id);
+      setPreReadingBook(null);
+      setViewMode('reader');
+    }
   };
 
   const handleToggleFullscreen = () => {
@@ -290,59 +307,49 @@ export default function App() {
   }, [isFullscreenReading]);
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA] dark:bg-[#121214] text-[#2C2C2C] dark:text-[#E2E2E2] flex flex-col justify-between selection:bg-[#5A5A40]/25 selection:text-[#5A5A40] font-serif transition-colors duration-300">
+    <div className="min-h-screen bg-[#F7F8FA] text-[#151923] flex flex-col font-sans transition-colors duration-200">
       {viewMode === 'library' ? (
-        /* Bookshelf View */
-        <main className="flex-1 flex flex-col items-center justify-start p-3 sm:p-6">
-          <PhysicalBookshelf
-            books={books}
-            activeBookId={activeBook.id}
-            onOpenBook={handleOpenBookFromShelf}
-            onOpenUpload={() => setIsUploadOpen(true)}
-            onDeleteBook={handleDeleteBook}
-            onToggleFavorite={handleToggleFavorite}
-          />
-        </main>
+        /* Pustakalya Home / Bookshelf Library View */
+        <PhysicalBookshelf
+          books={books}
+          activeBookId={activeBook.id}
+          settings={settings}
+          onSelectBook={handleSelectBookForReading}
+          onQuickResume={handleQuickResume}
+          onOpenUpload={() => setIsUploadOpen(true)}
+          onOpenGlobalSettings={() => setIsSettingsOpen(true)}
+          onDeleteBook={handleDeleteBook}
+          onToggleFavorite={handleToggleFavorite}
+          onUpdateSettings={handleUpdateSettings}
+        />
       ) : (
-        /* Physical Real Book Reader Mode */
-        <>
-          {/* Floating HUD (hidden when in pure full screen mode) */}
-          {!isFullscreenReading && (
-            <ReaderHUD
-              book={activeBook}
-              settings={settings}
-              isVisible={isHUDVisible}
-              onPageChange={handlePageChange}
-              onBackToLibrary={() => {
-                setViewMode('library');
-              }}
-              onOpenTOC={() => setIsTOCOpen(true)}
-              onOpenBookmarks={() => setIsBookmarksOpen(true)}
-              onOpenSearch={() => setIsSearchOpen(true)}
-              onOpenSettings={() => setIsSettingsOpen(true)}
-              onToggleBookmark={handleToggleBookmark}
-              onUpdateSettings={handleUpdateSettings}
-              isFullscreen={isFullscreenReading}
-              onToggleFullscreen={handleToggleFullscreen}
-            />
-          )}
+        /* Distraction-Free Physical Book Reader */
+        <div className="relative min-h-screen flex flex-col bg-[#F7F8FA]">
+          {/* Top & Bottom Reader HUD Bars */}
+          <ReaderHUD
+            book={activeBook}
+            settings={settings}
+            isVisible={isHUDVisible && !isFullscreenReading}
+            onPageChange={handlePageChange}
+            onBackToLibrary={() => setViewMode('library')}
+            onOpenTOC={() => setIsTOCOpen(true)}
+            onOpenBookmarks={() => setIsBookmarksOpen(true)}
+            onOpenSearch={() => setIsSearchOpen(true)}
+            onOpenSettings={() => setIsSettingsOpen(true)}
+            onToggleBookmark={handleToggleBookmark}
+            onUpdateSettings={handleUpdateSettings}
+            isFullscreen={isFullscreenReading}
+            onToggleFullscreen={handleToggleFullscreen}
+          />
 
-          {/* Main 3D Book Stage */}
+          {/* Main 3D Interactive Book Reading Area */}
           <main
-            className={`flex-1 flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 ${
+            className={`flex-1 flex items-center justify-center relative overflow-hidden transition-all duration-300 ${
               isFullscreenReading
-                ? 'fixed inset-0 z-40 p-1 sm:p-3 bg-[#F4F1EA] dark:bg-[#121214] flex items-center justify-center'
-                : 'p-2 sm:p-6 pb-20'
+                ? 'fixed inset-0 z-40 p-0 m-0 w-screen h-screen bg-[#151923]'
+                : 'pt-16 pb-20 px-2 sm:px-6'
             }`}
           >
-            {/* Natural Ambient Lighting Radial Glow */}
-            <div
-              className="absolute inset-0 opacity-40 pointer-events-none"
-              style={{
-                background: 'radial-gradient(circle at 50% 50%, #DCD7C9 0%, transparent 70%)',
-              }}
-            />
-
             <BookViewer
               book={activeBook}
               settings={settings}
@@ -355,8 +362,22 @@ export default function App() {
               onToggleFullscreen={handleToggleFullscreen}
             />
           </main>
-        </>
+        </div>
       )}
+
+      {/* Pre-Reading Settings Dialog */}
+      <PreReadingModal
+        isOpen={!!preReadingBook}
+        book={preReadingBook}
+        settings={settings}
+        atmosphere={settings.atmosphere}
+        deskSurface={settings.deskSurface}
+        onUpdateSettings={handleUpdateSettings}
+        onUpdateAtmosphere={(atm) => handleUpdateSettings({ atmosphere: atm })}
+        onUpdateDeskSurface={(surf) => handleUpdateSettings({ deskSurface: surf })}
+        onClose={() => setPreReadingBook(null)}
+        onConfirmOpenBook={handleConfirmPreReading}
+      />
 
       {/* Modals and Drawers */}
       <UploadModal
